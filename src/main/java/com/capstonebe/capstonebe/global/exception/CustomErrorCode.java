@@ -19,6 +19,9 @@ public enum CustomErrorCode {
     SEAT_ALREADY_RESERVED(HttpStatus.BAD_REQUEST, "해당 좌석은 이미 선택되었습니다. 다른 좌석으로 다시 시도해주세요."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
+    // item
+    NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "해당 아이템이 존재하지 않습니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
