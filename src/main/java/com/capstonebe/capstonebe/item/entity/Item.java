@@ -53,9 +53,7 @@ public class Item extends BaseEntity {
     }
 
     public void updateName(String name) {
-        if (name != null && !name.isBlank()) {
-            this.name = name;
-        }
+        this.name = name;
     }
 
     public void updateDescription(String description) {
@@ -63,10 +61,8 @@ public class Item extends BaseEntity {
     }
 
     public void updateLocation(Double latitude, Double longitude) {
-        if (latitude != null)
-            this.latitude = latitude;
-        if (longitude != null)
-            this.longitude = longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void updateCategory(Long categoryId) {

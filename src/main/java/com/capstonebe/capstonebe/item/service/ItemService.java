@@ -26,7 +26,17 @@ public class ItemService {
     @Transactional
     public LostItemResponse resisterLostItem(LostItemRegisterRequest lostItemRegisterRequest) {
 
-        Item newItem = LostItemRegisterRequest.toEntity(lostItemRegisterRequest);
+        Item newItem = Item.builder()
+                .userId(1L)
+                .type(ItemType.LOST_ITEM)
+                .name(lostItemRegisterRequest.getName())
+                .latitude(lostItemRegisterRequest.getLatitude())
+                .longitude(lostItemRegisterRequest.getLongitude())
+                .time(lostItemRegisterRequest.getTime())
+                .description(lostItemRegisterRequest.getDescription())
+                .itemState(ItemState.NOT_RETURNED)
+                .categoryId(lostItemRegisterRequest.getCategoryId())
+                .build();
 
         return LostItemResponse.fromEntity(itemRepository.save(newItem));
     }

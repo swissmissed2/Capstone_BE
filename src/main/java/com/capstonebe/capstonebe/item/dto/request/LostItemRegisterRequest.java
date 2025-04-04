@@ -33,17 +33,17 @@ public class LostItemRegisterRequest {
     @NotNull
     private Long categoryId;
 
-    public static Item toEntity(LostItemRegisterRequest lostItemRegisterRequest) {
-        return Item.builder()
-                .userId(1L)
-                .type(ItemType.LOST_ITEM)
-                .name(lostItemRegisterRequest.getName())
-                .latitude(lostItemRegisterRequest.getLatitude())
-                .longitude(lostItemRegisterRequest.getLongitude())
-                .time(lostItemRegisterRequest.getTime())
-                .description(lostItemRegisterRequest.getDescription())
-                .itemState(ItemState.NOT_RETURNED)
-                .categoryId(lostItemRegisterRequest.getCategoryId())
-                .build();
-    }
+//    public static Item toEntity(LostItemRegisterRequest lostItemRegisterRequest) {
+//        return Item.builder()
+//                .userId(1L)
+//                .type(ItemType.LOST_ITEM)
+//                .name(lostItemRegisterRequest.getName())
+//                .latitude(lostItemRegisterRequest.getLatitude())
+//                .longitude(lostItemRegisterRequest.getLongitude())
+//                .time(lostItemRegisterRequest.getTime())
+//                .description(lostItemRegisterRequest.getDescription())
+//                .itemState(ItemState.NOT_RETURNED)
+//                .categoryId(lostItemRegisterRequest.getCategoryId())
+//                .build();
+//    }
 }
