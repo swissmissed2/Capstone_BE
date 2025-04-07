@@ -3,16 +3,12 @@ package com.capstonebe.capstonebe.item.dto.response;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.entity.ItemType;
-import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import com.capstonebe.capstonebe.place.entity.Place;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -54,7 +50,7 @@ public class LostItemResponse {
                 .time(item.getTime())
                 .description(item.getDescription())
                 .state(item.getState())
-                .categoryId(item.getCategoryId())
+                .categoryId(item.getCategory().getId())
                 .places(places.stream()
                         .map(place -> new PlaceInfo(
                                 place.getId(),

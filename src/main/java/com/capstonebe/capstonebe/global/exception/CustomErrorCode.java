@@ -25,6 +25,9 @@ public enum CustomErrorCode {
     // place
     NOT_FOUND_PLACE(HttpStatus.NOT_FOUND, "해당 장소가 존재하지 않습니다."),
 
+    // category
+    NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "해당 카테고리가 존재하지 않습니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
