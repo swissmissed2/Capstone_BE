@@ -35,4 +35,13 @@ public class PlaceController {
         placeService.deletePlace(id);
         return ResponseEntity.ok().build();
     }
+
+
+
+    // 테스트용
+    @PostMapping("/test-bulk-register")
+    public ResponseEntity<String> generateTestPlaces() {
+        placeService.registerTestPlaces();
+        return ResponseEntity.ok("장소 테스트 데이터 5개 등록 완료");
+    }
 }

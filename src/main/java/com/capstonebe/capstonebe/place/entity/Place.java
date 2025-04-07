@@ -1,8 +1,12 @@
 package com.capstonebe.capstonebe.place.entity;
 
+import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,6 +23,9 @@ public class Place {
 
     @Column(nullable = false)
     private Double longitude;
+
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPlace> itemPlaces = new ArrayList<>();
 
     @Builder
     public Place(String name, Double latitude, Double longitude) {

@@ -1,11 +1,14 @@
 package com.capstonebe.capstonebe.item.entity;
 
 import com.capstonebe.capstonebe.global.entity.BaseEntity;
+import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +39,9 @@ public class Item extends BaseEntity {
 
     @Column(nullable = false)
     private Long categoryId;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPlace> itemPlaces = new ArrayList<>();
 
     public Item() {}
 

@@ -1,14 +1,12 @@
 package com.capstonebe.capstonebe.item.dto.request;
 
-import com.capstonebe.capstonebe.item.entity.Item;
-import com.capstonebe.capstonebe.item.entity.ItemState;
-import com.capstonebe.capstonebe.item.entity.ItemType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -32,6 +30,8 @@ public class LostItemRegisterRequest {
 
     @NotNull
     private Long categoryId;
+
+    private List<Long> placeIds;
 
 //    public static Item toEntity(LostItemRegisterRequest lostItemRegisterRequest) {
 //        return Item.builder()

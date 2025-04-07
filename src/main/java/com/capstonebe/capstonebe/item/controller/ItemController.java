@@ -2,7 +2,6 @@ package com.capstonebe.capstonebe.item.controller;
 
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
-import com.capstonebe.capstonebe.item.dto.response.LostItemResponse;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.service.ItemService;
 import jakarta.validation.Valid;
@@ -58,10 +57,9 @@ public class ItemController {
 
 
     // 테스트용
-    @PostMapping("/generate-test-data")
-    public String generateTestItems() {
-
-        itemService.generateTestItems(100);  // 원하는 개수
-        return "100 test items generated";
+    @PostMapping("/test-bulk-register")
+    public ResponseEntity<String> registerTestItems() {
+        itemService.registerTestItems(50); // 50개 생성
+        return ResponseEntity.ok("테스트용 Item 50개 등록 완료");
     }
 }
