@@ -22,7 +22,7 @@ public class FAQService {
         FAQ faq = FAQ.builder()
                 .question(createRequest.getQuestion())
                 .answer(createRequest.getAnswer())
-                .type(createRequest.getType())
+                .questionType(createRequest.getQuestionType())
                 .build();
 
         faqRepository.save(faq);
@@ -41,8 +41,8 @@ public class FAQService {
             faq.updateAnswer(updateRequest.getAnswer());
         }
 
-        if (updateRequest.getType() != null) {
-            faq.updateType(updateRequest.getType());
+        if (updateRequest.getQuestionType() != null) {
+            faq.updateType(updateRequest.getQuestionType());
         }
 
         return FAQResponse.from(faq);

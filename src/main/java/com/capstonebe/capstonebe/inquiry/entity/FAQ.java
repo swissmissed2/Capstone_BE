@@ -22,7 +22,7 @@ public class FAQ {
     private String answer;
 
     @Enumerated(EnumType.STRING)
-    private QuestionType type;
+    private QuestionType questionType;
 
     public void updateQuestion(String question) {
         this.question = question;
@@ -33,6 +33,6 @@ public class FAQ {
     }
 
     public void updateType(QuestionType type) {
-        this.type = type;
+        this.questionType = type;
     }
 }

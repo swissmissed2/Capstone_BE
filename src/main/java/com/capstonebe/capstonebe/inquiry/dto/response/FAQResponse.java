@@ -20,7 +20,7 @@ public class FAQResponse {
                 faq.getId(),
                 faq.getQuestion(),
                 faq.getAnswer(),
-                faq.getType()
+                faq.getQuestionType()
         );
     }
 }

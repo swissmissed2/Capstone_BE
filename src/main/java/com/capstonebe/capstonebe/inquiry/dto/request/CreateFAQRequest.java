@@ -17,5 +17,5 @@ public class CreateFAQRequest {
     private String answer;
 
     @NotBlank
-    private QuestionType type;
+    private QuestionType questionType;
 }

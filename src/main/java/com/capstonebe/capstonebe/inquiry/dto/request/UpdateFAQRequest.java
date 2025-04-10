@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class UpdateFAQRequest {
     private String question;
     private String answer;
-    private QuestionType type;
+    private QuestionType questionType;
 }
