@@ -19,6 +19,9 @@ public enum CustomErrorCode {
     // Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 포스트를 찾을 수 없습니다."),
 
+    // FAQ
+    FAQ_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 FAQ를 찾을 수 없습니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),

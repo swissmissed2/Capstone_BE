@@ -31,7 +31,7 @@ public class PostController {
 
     // 포스트 수정
     @PatchMapping("/update/{id}")
-    public ResponseEntity<PostResponse> update(@PathVariable Long id, UpdatePostRequest updateRequest) {
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequest updateRequest) {
         PostResponse response = postService.updatePost(id, updateRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
