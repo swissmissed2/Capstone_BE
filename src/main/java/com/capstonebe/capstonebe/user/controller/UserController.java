@@ -120,7 +120,7 @@ public class UserController {
         return ResponseEntity.ok(isAdmin);
     }
 
-    // 전체 조회
+    // 회원 전체 조회
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
         Page<UserResponse> users = userService.getAllUsers(pageable);
