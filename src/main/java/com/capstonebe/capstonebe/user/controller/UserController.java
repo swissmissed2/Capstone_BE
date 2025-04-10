@@ -32,12 +32,14 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+    // 회원 가입
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRegisterRequest registerRequest) {
-        UserResponse response = userService.addUser(registerRequest);
+        UserResponse response = userService.createUser(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // 회원 정보 수정
     @PutMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@CookieValue(value = "jwt", required = false) String token, @RequestBody @Valid UserUpdateRequest updateRequest) {
         String email = jwtUtil.extractEmail(token);
@@ -45,18 +47,21 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(updatedUser));
     }
 
+    // 회원 탈퇴
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
+    // 단일 조회
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Map<String, RoleType>> login(@RequestBody @Valid UserLoginRequest loginRequest, HttpServletResponse response) {
         try {
@@ -75,6 +80,7 @@ public class UserController {
         }
     }
 
+    // 마이페이지
     @GetMapping("/myPage")
     public ResponseEntity<UserResponse> getMyPage(@CookieValue(value = "jwt", required = false) String token) {
         String email = jwtUtil.extractEmail(token);
@@ -82,6 +88,7 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response, @CookieValue(value = "jwt", required = false) String token) {
         if (token == null) {
@@ -98,12 +105,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 이메일 중복 체크
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailDuplicate(@RequestParam String email) {
         boolean isDuplicate = userService.isEmailDuplicate(email);
         return ResponseEntity.ok(isDuplicate);
     }
 
+    // 권환 확인
     @GetMapping("/role")
     public ResponseEntity<Boolean> checkAdminRole(@CookieValue(value = "jwt", required = false) String token) {
         String email = jwtUtil.extractEmail(token);
@@ -111,24 +120,28 @@ public class UserController {
         return ResponseEntity.ok(isAdmin);
     }
 
+    // 전체 조회
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
         Page<UserResponse> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 
+    // 회원 활성화
     @PatchMapping("/{id}/activate")
     public ResponseEntity<Void> activateUser(@PathVariable Long id) {
         userService.activateUser(id);
         return ResponseEntity.ok().build();
     }
 
+    // 회원 비활성화
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
         userService.deactivateUser(id);
         return ResponseEntity.ok().build();
     }
 
+    // 회원 검색
     @GetMapping("/search")
     public ResponseEntity<Page<UserResponse>> searchUsers(@RequestParam String keyword, Pageable pageable) {
         Page<UserResponse> users = userService.searchUsers(keyword, pageable);
