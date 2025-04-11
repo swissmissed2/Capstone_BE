@@ -15,12 +15,13 @@ import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import com.capstonebe.capstonebe.itemplace.repository.ItemPlaceRepository;
 import com.capstonebe.capstonebe.place.entity.Place;
 import com.capstonebe.capstonebe.place.repository.PlaceRepository;
+import com.capstonebe.capstonebe.user.entity.User;
+import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -33,15 +34,19 @@ public class ItemService {
     private final ItemPlaceRepository itemPlaceRepository;
     private final PlaceRepository placeRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public LostItemResponse resisterLostItem(LostItemRegisterRequest request) {
+    public LostItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
 
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
         Item item = Item.builder()
-                .userId(1L)
+                .user(user)
                 .type(ItemType.LOST_ITEM)
                 .name(request.getName())
                 .latitude(request.getLatitude())
@@ -123,6 +128,37 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<LostItemResponse> getLostItemsByFilter(Long placeId, Long categoryId) {
+
+        List<Item> items;
+        ItemType itemType = ItemType.LOST_ITEM;
+
+        if (placeId != null && categoryId != null) {
+            items = itemRepository.findItemsByPlaceCategoryAndType(placeId, categoryId, itemType);
+        }
+        else if (placeId != null) {
+            items = itemRepository.findItemsByPlaceIdAndType(placeId, itemType);
+        }
+        else if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
+            items = itemRepository.findByCategoryAndType(category, itemType);
+        }
+        else {
+            items = itemRepository.findByType(itemType);
+        }
+
+        return items.stream()
+                .map(item -> {
+                    List<Place> places = item.getItemPlaces().stream()
+                            .map(ItemPlace::getPlace)
+                            .toList();
+                    return LostItemResponse.fromEntity(item, places);
+                })
+                .toList();
+    }
+
     private void saveItemPlaces(Item item, List<Place> places) {
         for (Place place : places) {
             ItemPlace itemPlace = ItemPlace.builder()
@@ -137,40 +173,31 @@ public class ItemService {
 
     // 테스트용
     @Transactional
-    public void registerTestItems(int count) {
-        List<Place> allPlaces = placeRepository.findAll();
+    public void registerFixedTestItems(String email) {
+        List<LostItemRegisterRequest> testItems = List.of(
+                createRequest("검정색 지갑", 37.5665, 126.9780, "지하철역 근처에서 분실한 검정 지갑", 1L, List.of(1L, 2L)),
+                createRequest("아이폰 13", 37.5700, 126.9825, "카페에서 두고 온 아이폰", 2L, List.of(2L)),
+                createRequest("회색 후드티", 37.5641, 126.9750, "버스에서 분실한 옷", 3L, List.of(3L)),
+                createRequest("서류 가방", 37.5610, 126.9832, "사무실 근처에서 잃어버림", 4L, List.of(1L)),
+                createRequest("무선 이어폰", 37.5599, 126.9700, "공원 벤치에서 분실한 이어폰", 5L, List.of(1L, 3L))
+        );
 
-        if (allPlaces.size() < 3) {
-            throw new RuntimeException("Place가 최소 3개 이상 있어야 합니다.");
-        }
-
-        for (int i = 1; i <= count; i++) {
-            Item item = Item.builder()
-                    .userId((long) (i % 5 + 1)) // 1~5 사용자 반복
-                    .type(ItemType.LOST_ITEM)
-                    .name("테스트 아이템 " + i)
-                    .description("이것은 테스트용 아이템입니다 #" + i)
-                    .latitude(37.5 + i * 0.001)
-                    .longitude(127.0 + i * 0.001)
-                    .time(LocalDateTime.now().minusDays(i % 7))
-                    .itemState(ItemState.NOT_RETURNED)
-                    .category(categoryRepository.findById((long) (i % 10 + 1)).get()) // 1~10 카테고리
-                    .build();
-
-            itemRepository.save(item);
-
-            // 랜덤으로 1~3개 장소 연결
-            Collections.shuffle(allPlaces);
-            List<Place> selectedPlaces = allPlaces.subList(0, new Random().nextInt(3) + 1);
-
-            for (Place place : selectedPlaces) {
-                ItemPlace itemPlace = ItemPlace.builder()
-                                .item(item)
-                                .place(place)
-                                .build();
-                itemPlaceRepository.save(itemPlace);
-            }
+        for (LostItemRegisterRequest request : testItems) {
+            resisterLostItem(request, email); // 기존 등록 메서드 재사용!
         }
     }
+
+    private LostItemRegisterRequest createRequest(String name, Double lat, Double lon, String desc, Long categoryId, List<Long> placeIds) {
+        LostItemRegisterRequest request = new LostItemRegisterRequest();
+        request.setName(name);
+        request.setLatitude(lat);
+        request.setLongitude(lon);
+        request.setTime(LocalDateTime.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
+        request.setDescription(desc);
+        request.setCategoryId(categoryId);
+        request.setPlaceIds(placeIds);
+        return request;
+    }
+
 
 }

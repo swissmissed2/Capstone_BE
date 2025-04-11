@@ -3,6 +3,7 @@ package com.capstonebe.capstonebe.item.entity;
 import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.global.entity.BaseEntity;
 import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
+import com.capstonebe.capstonebe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +19,9 @@ public class Item extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private ItemType type;
@@ -48,8 +50,8 @@ public class Item extends BaseEntity {
     public Item() {}
 
     @Builder
-    public Item(Long userId, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Category category) {
-        this.userId = userId;
+    public Item(User user, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Category category) {
+        this.user = user;
         this.type = type;
         this.name = name;
         this.latitude = latitude;
