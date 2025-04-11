@@ -1,5 +1,6 @@
 package com.capstonebe.capstonebe.item.entity;
 
+import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.global.entity.BaseEntity;
 import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import jakarta.persistence.*;
@@ -37,8 +38,9 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private ItemState state;
 
-    @Column(nullable = false)
-    private Long categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPlace> itemPlaces = new ArrayList<>();
@@ -46,7 +48,7 @@ public class Item extends BaseEntity {
     public Item() {}
 
     @Builder
-    public Item(Long userId, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Long categoryId) {
+    public Item(Long userId, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Category category) {
         this.userId = userId;
         this.type = type;
         this.name = name;
@@ -55,7 +57,7 @@ public class Item extends BaseEntity {
         this.time = time;
         this.description = description;
         this.state = itemState;
-        this.categoryId = categoryId;
+        this.category = category;
     }
 
     public void updateName(String name) {
@@ -71,14 +73,14 @@ public class Item extends BaseEntity {
         this.longitude = longitude;
     }
 
-    public void updateCategory(Long categoryId) {
-        this.categoryId = categoryId;
+    public void updateCategory(Category category) {
+        this.category = category;
     }
 
-    public void edit(String name, String description, Double latitude, Double longitude, Long categoryId) {
+    public void edit(String name, String description, Double latitude, Double longitude, Category category) {
         updateName(name);
         updateDescription(description);
         updateLocation(latitude, longitude);
-        updateCategory(categoryId);
+        updateCategory(category);
     }
 }

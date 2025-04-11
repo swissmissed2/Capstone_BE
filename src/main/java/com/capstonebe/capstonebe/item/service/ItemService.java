@@ -1,5 +1,7 @@
 package com.capstonebe.capstonebe.item.service;
 
+import com.capstonebe.capstonebe.category.entity.Category;
+import com.capstonebe.capstonebe.category.repository.CategoryRepository;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
@@ -30,9 +32,13 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemPlaceRepository itemPlaceRepository;
     private final PlaceRepository placeRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public LostItemResponse resisterLostItem(LostItemRegisterRequest request) {
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
 
         Item item = Item.builder()
                 .userId(1L)
@@ -43,20 +49,13 @@ public class ItemService {
                 .time(request.getTime())
                 .description(request.getDescription())
                 .itemState(ItemState.NOT_RETURNED)
-                .categoryId(request.getCategoryId())
+                .category(category)
                 .build();
 
         itemRepository.save(item);
 
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
-
-        for (Place place : places) {
-            ItemPlace itemPlace = ItemPlace.builder()
-                    .item(item)
-                    .place(place)
-                    .build();
-            itemPlaceRepository.save(itemPlace);
-        }
+        saveItemPlaces(item, places);
 
         return LostItemResponse.fromEntity(item, places);
     }
@@ -67,29 +66,23 @@ public class ItemService {
         Item item = itemRepository.findById(request.getId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
+
         item.edit(
                 request.getName(),
                 request.getDescription(),
                 request.getLatitude(),
                 request.getLongitude(),
-                request.getCategoryId()
+                category
         );
 
-        // 2. 기존 장소 연결 제거
         itemPlaceRepository.deleteByItem(item);
 
-        // 3. 새로운 장소 연결
-        List<Place> newPlaces = placeRepository.findAllById(request.getPlaceIds());
+        List<Place> places = placeRepository.findAllById(request.getPlaceIds());
+        saveItemPlaces(item, places);
 
-        for (Place place : newPlaces) {
-            ItemPlace itemPlace = ItemPlace.builder()
-                    .item(item)
-                    .place(place)
-                    .build();
-            itemPlaceRepository.save(itemPlace);
-        }
-
-        return LostItemResponse.fromEntity(item, newPlaces);
+        return LostItemResponse.fromEntity(item, places);
     }
 
     @Transactional
@@ -130,6 +123,15 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+    private void saveItemPlaces(Item item, List<Place> places) {
+        for (Place place : places) {
+            ItemPlace itemPlace = ItemPlace.builder()
+                    .item(item)
+                    .place(place)
+                    .build();
+            itemPlaceRepository.save(itemPlace);
+        }
+    }
 
 
 
@@ -152,7 +154,7 @@ public class ItemService {
                     .longitude(127.0 + i * 0.001)
                     .time(LocalDateTime.now().minusDays(i % 7))
                     .itemState(ItemState.NOT_RETURNED)
-                    .categoryId((long) (i % 10 + 1)) // 1~10 카테고리
+                    .category(categoryRepository.findById((long) (i % 10 + 1)).get()) // 1~10 카테고리
                     .build();
 
             itemRepository.save(item);
