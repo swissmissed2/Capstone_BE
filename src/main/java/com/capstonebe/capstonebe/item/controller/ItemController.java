@@ -4,7 +4,6 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
-import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +78,7 @@ public class ItemController {
     // 테스트용
     @PostMapping("/test-bulk-register")
     public ResponseEntity<String> registerTestItems(@AuthenticationPrincipal User user) {
-        itemService.registerFixedTestItems(user.getUsername()); // 50개 생성
-        return ResponseEntity.ok("테스트용 Item 50개 등록 완료");
+        itemService.registerFixedTestItems(user.getUsername());
+        return ResponseEntity.ok("테스트용 Item 5개 등록 완료");
     }
 }

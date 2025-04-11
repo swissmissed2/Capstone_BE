@@ -28,6 +28,14 @@ public enum CustomErrorCode {
     // category
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "해당 카테고리가 존재하지 않습니다."),
 
+    // image
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 이미지 찾을 수 없습니다."),
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 중 오류가 발생했습니다."),
+    IMAGE_CONVERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 변환에 실패했습니다."),
+    IMAGE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제 중 오류가 발생했습니다."),
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "삭제하려는 파일이 존재하지 않습니다."),
+    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 이미지 형식입니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
