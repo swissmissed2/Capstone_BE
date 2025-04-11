@@ -1,14 +1,18 @@
 package com.capstonebe.capstonebe.item.entity;
 
+import com.capstonebe.capstonebe.global.entity.BaseEntity;
+import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-public class Item {
+public class Item extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,8 +30,7 @@ public class Item {
 
     private Double longitude;
 
-    @Column(nullable = false)
-    private LocalDateTime time = LocalDateTime.now();
+    private LocalDateTime time;
 
     private String description;
 
@@ -37,24 +40,26 @@ public class Item {
     @Column(nullable = false)
     private Long categoryId;
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPlace> itemPlaces = new ArrayList<>();
+
     public Item() {}
 
     @Builder
-    public Item(Long userId, ItemType type, String name, Double latitude, Double longitude, String description, ItemState itemState, Long categoryId) {
+    public Item(Long userId, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Long categoryId) {
         this.userId = userId;
         this.type = type;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.time = time;
         this.description = description;
         this.state = itemState;
         this.categoryId = categoryId;
     }
 
     public void updateName(String name) {
-        if (name != null && !name.isBlank()) {
-            this.name = name;
-        }
+        this.name = name;
     }
 
     public void updateDescription(String description) {
@@ -62,10 +67,8 @@ public class Item {
     }
 
     public void updateLocation(Double latitude, Double longitude) {
-        if (latitude != null)
-            this.latitude = latitude;
-        if (longitude != null)
-            this.longitude = longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void updateCategory(Long categoryId) {
