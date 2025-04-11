@@ -6,13 +6,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRegisterRequest {
     @NotBlank
-    @Email
     @Email(message = "올바른 이메일 형식을 입력해 주세요")
     private String email;
 

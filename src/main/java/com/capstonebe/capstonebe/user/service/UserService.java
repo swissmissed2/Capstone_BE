@@ -28,7 +28,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public UserResponse addUser(UserRegisterRequest registerRequest) {
+    public UserResponse createUser(UserRegisterRequest registerRequest) {
         if(userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new CustomException(CustomErrorCode.DUPLICATED_EMAIL);
         }

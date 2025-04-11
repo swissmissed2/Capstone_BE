@@ -16,8 +16,14 @@ public enum CustomErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 
-    SEAT_ALREADY_RESERVED(HttpStatus.BAD_REQUEST, "해당 좌석은 이미 선택되었습니다. 다른 좌석으로 다시 시도해주세요."),
-    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    // Post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 포스트를 찾을 수 없습니다."),
+
+    // FAQ
+    FAQ_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 FAQ를 찾을 수 없습니다."),
+
+    // Inquiry
+    INQUIRY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
 
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
