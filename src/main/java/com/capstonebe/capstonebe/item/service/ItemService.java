@@ -159,6 +159,24 @@ public class ItemService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<LostItemResponse> getLostItemsByUser(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        List<Item> items = itemRepository.findByUser(user);
+
+        return items.stream()
+                .map(item -> {
+                    List<Place> places = item.getItemPlaces().stream()
+                            .map(ItemPlace::getPlace)
+                            .toList();
+                    return LostItemResponse.fromEntity(item, places);
+                })
+                .toList();
+    }
+
     private void saveItemPlaces(Item item, List<Place> places) {
         for (Place place : places) {
             ItemPlace itemPlace = ItemPlace.builder()

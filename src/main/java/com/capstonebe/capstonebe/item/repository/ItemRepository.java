@@ -3,6 +3,7 @@ package com.capstonebe.capstonebe.item.repository;
 import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemType;
+import com.capstonebe.capstonebe.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findItemsByPlaceCategoryAndType(@Param("placeId") Long placeId,
                                                @Param("categoryId") Long categoryId,
                                                @Param("itemType") ItemType itemType);
+
+    List<Item> findByUser(User user);
 }

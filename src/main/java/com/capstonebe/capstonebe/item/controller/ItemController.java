@@ -74,6 +74,16 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getLostItemsByFilter(placeId, categoryId));
     }
 
+    // 유저가 등록한 분실물 목록 조회
+    @GetMapping("/my")
+    public ResponseEntity<?> getLostItemsByUser(@AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        return ResponseEntity.ok(itemService.getLostItemsByUser(user.getUsername()));
+    }
 
     // 테스트용
     @PostMapping("/test-bulk-register")
