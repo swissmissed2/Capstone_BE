@@ -1,5 +1,6 @@
 package com.capstonebe.capstonebe.post.entity;
 
+import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,9 +25,17 @@ public class Post {
     @ManyToOne(fetch = LAZY)
     private User user;
 
+    @JoinColumn(name = "post_id")
+    @OneToOne(fetch = LAZY)
+    private Item item;
+
     private String title;
 
     private String content;
+
+    public void updateItem(Item item) {
+        this.item = item;
+    }
 
     public void updateTitle(String title) {
         this.title = title;

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreatePostRequest {
+    private Long itemId;
+
     @NotBlank
     private String title;
 
