@@ -69,7 +69,6 @@ public class ImageService {
                 .item(item)
                 .user(user)
                 .path(request.getPath())
-                .field(request.getField())
                 .build();
 
         imageRepository.save(image);
@@ -94,7 +93,7 @@ public class ImageService {
         Image image = imageRepository.findById(request.getId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.IMAGE_NOT_FOUND));
 
-        image.updateField(request.getField());
+        //image.updateField(request.getField());
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
             deleteInS3(image.getPath());

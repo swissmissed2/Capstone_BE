@@ -13,7 +13,4 @@ public class ImageRegisterRequest {
     @NotBlank
     private String path;
 
-    @NotNull
-    private String field;
-
 }

@@ -22,7 +22,7 @@ public class LostItemRegisterRequest {
     @NotNull
     private Double longitude;
 
-    @NotNull
+    //@NotNull
     private LocalDate time;
 
     @NotNull

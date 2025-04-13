@@ -25,6 +25,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 //                                               @Param("categoryId") Long categoryId,
 //                                               @Param("itemType") ItemType itemType);
 
+    // 최신순
     @Query("""
     SELECT i FROM Item i
     JOIN FETCH i.itemPlaces ip
@@ -40,6 +41,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     )
     AND (:startDate IS NULL OR i.time >= :startDate)
     AND (:endDate IS NULL OR i.time <= :endDate)
+    ORDER BY i.time DESC
 """)
     List<Item> findItemsByFilter(
             @Param("placeName") String placeName,

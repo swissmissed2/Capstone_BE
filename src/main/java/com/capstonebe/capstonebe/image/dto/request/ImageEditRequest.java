@@ -9,7 +9,4 @@ public class ImageEditRequest {
     @NotNull
     private Long id;
 
-    @NotNull
-    private String field;
-
 }

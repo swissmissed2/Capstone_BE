@@ -129,13 +129,13 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<LostItemResponse> getLostItemsByFilter(String placeName, String categoryName, String keyword, LocalDate startDate, LocalDate endDate) {
+    public List<LostItemResponse> getLostItemsByFilter(ItemType type, String placeName, String categoryName, String keyword, LocalDate startDate, LocalDate endDate) {
 
         if (keyword != null && keyword.trim().isEmpty()) {
             keyword = null;
         }
 
-        List<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, ItemType.LOST_ITEM, keyword, startDate, endDate);
+        List<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, type, keyword, startDate, endDate);
 
         return items.stream()
                 .map(item -> {
