@@ -2,6 +2,8 @@ package com.capstonebe.capstonebe.post.service;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
@@ -21,13 +23,16 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Transactional
     public PostResponse createPost(String email, CreatePostRequest createRequest) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Item item = itemRepository.findById(createRequest.getItemId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
         Post post = Post.builder()
                 .user(user)
+                .item(item)
                 .title(createRequest.getTitle())
                 .content(createRequest.getContent())
                 .build();
@@ -39,6 +44,11 @@ public class PostService {
     @Transactional
     public PostResponse updatePost(Long id, UpdatePostRequest updateRequest) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+
+        if(updateRequest.getItemId() != null) {
+            Item item = itemRepository.findById(updateRequest.getItemId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+            post.updateItem(item);
+        }
 
         if (updateRequest.getTitle() != null) {
             post.updateTitle(updateRequest.getTitle());
@@ -58,6 +68,13 @@ public class PostService {
         }
 
         postRepository.deleteById(id);
+    }
+
+    @Transactional
+    public PostResponse getPostById(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+
+        return PostResponse.from(post);
     }
 
     @Transactional(readOnly = true)

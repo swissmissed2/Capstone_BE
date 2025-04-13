@@ -1,6 +1,6 @@
-package com.capstonebe.capstonebe.post.entity;
+package com.capstonebe.capstonebe.comment.entity;
 
-import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.post.entity.Post;
 import com.capstonebe.capstonebe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,10 +15,10 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "comment_id")
     private Long id;
 
     @JoinColumn(name = "user_id")
@@ -26,22 +26,8 @@ public class Post {
     private User user;
 
     @JoinColumn(name = "post_id")
-    @OneToOne(fetch = LAZY)
-    private Item item;
-
-    private String title;
+    @ManyToOne(fetch = LAZY)
+    private Post post;
 
     private String content;
-
-    public void updateItem(Item item) {
-        this.item = item;
-    }
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateContent(String content) {
-        this.content = content;
-    }
 }

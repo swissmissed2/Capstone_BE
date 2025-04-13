@@ -1,4 +1,4 @@
-package com.capstonebe.capstonebe.post.dto.request;
+package com.capstonebe.capstonebe.comment.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostRequest {
-    private Long itemId;
-
+public class CreateCommentRequest {
     @NotBlank
-    private String title;
+    private Long postId;
 
     @NotBlank
     private String content;
