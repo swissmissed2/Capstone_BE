@@ -60,11 +60,11 @@ public class PlaceService {
     @Transactional
     public void registerTestPlaces() {
         List<Place> testPlaces = List.of(
-                new Place("서울역", 37.554722, 126.970833),
-                new Place("홍대입구역", 37.5563, 126.9236),
-                new Place("강남역", 37.4979, 127.0276),
-                new Place("부산역", 35.1151, 129.0426),
-                new Place("제주국제공항", 33.5113, 126.4930)
+                new Place("충무관", 37.554722, 126.970833),
+                new Place("광개토관", 37.5563, 126.9236),
+                new Place("학술정보원", 37.4979, 127.0276),
+                new Place("광개토관", 35.1151, 129.0426),
+                new Place("학술정보원", 33.5113, 126.4930)
         );
 
         placeRepository.saveAll(testPlaces);

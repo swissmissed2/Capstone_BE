@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -129,25 +129,13 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<LostItemResponse> getLostItemsByFilter(Long placeId, Long categoryId) {
+    public List<LostItemResponse> getLostItemsByFilter(String placeName, String categoryName, String keyword, LocalDate startDate, LocalDate endDate) {
 
-        List<Item> items;
-        ItemType itemType = ItemType.LOST_ITEM;
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
 
-        if (placeId != null && categoryId != null) {
-            items = itemRepository.findItemsByPlaceCategoryAndType(placeId, categoryId, itemType);
-        }
-        else if (placeId != null) {
-            items = itemRepository.findItemsByPlaceIdAndType(placeId, itemType);
-        }
-        else if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
-            items = itemRepository.findByCategoryAndType(category, itemType);
-        }
-        else {
-            items = itemRepository.findByType(itemType);
-        }
+        List<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, ItemType.LOST_ITEM, keyword, startDate, endDate);
 
         return items.stream()
                 .map(item -> {
@@ -158,6 +146,7 @@ public class ItemService {
                 })
                 .toList();
     }
+
 
     @Transactional(readOnly = true)
     public List<LostItemResponse> getLostItemsByUser(String email) {
@@ -210,7 +199,7 @@ public class ItemService {
         request.setName(name);
         request.setLatitude(lat);
         request.setLongitude(lon);
-        request.setTime(LocalDateTime.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
+        request.setTime(LocalDate.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
         request.setDescription(desc);
         request.setCategoryId(categoryId);
         request.setPlaceIds(placeIds);

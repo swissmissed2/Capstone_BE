@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -19,7 +19,7 @@ public class LostItemResponse {
     private String name;
     private Double latitude;
     private Double longitude;
-    private LocalDateTime time;
+    private LocalDate time;
     private String description;
     private ItemState state;
     private Long categoryId;
@@ -27,7 +27,7 @@ public class LostItemResponse {
 
 
     @Builder
-    public LostItemResponse(Long id, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState state, Long categoryId, List<PlaceInfo> places) {
+    public LostItemResponse(Long id, ItemType type, String name, Double latitude, Double longitude, LocalDate time, String description, ItemState state, Long categoryId, List<PlaceInfo> places) {
         this.id = id;
         this.type = type;
         this.name = name;

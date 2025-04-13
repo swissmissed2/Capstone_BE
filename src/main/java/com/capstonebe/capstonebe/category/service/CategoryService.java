@@ -65,11 +65,11 @@ public class CategoryService {
     @Transactional
     public void registerTestCategories() {
         List<Category> testCategories = List.of(
-                new Category("전자기기"),
-                new Category("의류"),
-                new Category("서류/문서"),
-                new Category("지갑/현금"),
-                new Category("기타")
+                new Category("지갑"),
+                new Category("귀중품"),
+                new Category("지갑"),
+                new Category("화장품"),
+                new Category("귀중품")
         );
 
         categoryRepository.saveAll(testCategories);

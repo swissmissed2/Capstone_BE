@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class Item extends BaseEntity {
 
     private Double longitude;
 
-    private LocalDateTime time;
+    private LocalDate time;
 
     private String description;
 
@@ -50,7 +50,7 @@ public class Item extends BaseEntity {
     public Item() {}
 
     @Builder
-    public Item(User user, ItemType type, String name, Double latitude, Double longitude, LocalDateTime time, String description, ItemState itemState, Category category) {
+    public Item(User user, ItemType type, String name, Double latitude, Double longitude, LocalDate time, String description, ItemState itemState, Category category) {
         this.user = user;
         this.type = type;
         this.name = name;

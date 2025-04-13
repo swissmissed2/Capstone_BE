@@ -6,10 +6,13 @@ import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.service.ItemService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/items")
@@ -66,13 +69,18 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemById(id));
     }
 
-    // 전체 목록 조회 또는 필터 적용하여 분실물 목록 조회
-    @GetMapping()
-    public ResponseEntity<?> getLostItemsByFilter(@RequestParam(required = false) Long placeId,
-                                                    @RequestParam(required = false) Long categoryId) {
+    // 전체 목록 조회 또는 필터 적용하여 분실물 목록 조회 + 검색어 + 날짜
+    @GetMapping
+    public ResponseEntity<?> getLostItemsByFilter(@RequestParam(required = false) String place,
+                                                  @RequestParam(required = false) String category,
+                                                  @RequestParam(required = false) String keyword,
+                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-        return ResponseEntity.ok(itemService.getLostItemsByFilter(placeId, categoryId));
+        //System.out.println(place + " " + category + " " + keyword + " " + startDate + " " + endDate);
+        return ResponseEntity.ok(itemService.getLostItemsByFilter(place, category, keyword, startDate, endDate));
     }
+
 
     // 유저가 등록한 분실물 목록 조회
     @GetMapping("/my")
