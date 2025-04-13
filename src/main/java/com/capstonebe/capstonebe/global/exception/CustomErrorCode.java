@@ -34,6 +34,9 @@ public enum CustomErrorCode {
     // category
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "해당 카테고리가 존재하지 않습니다."),
 
+    // comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다."),
+
     // image
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 이미지 찾을 수 없습니다."),
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 중 오류가 발생했습니다."),

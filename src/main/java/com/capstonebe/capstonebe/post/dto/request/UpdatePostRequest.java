@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatePostRequest {
+    private Long itemId;
     private String title;
     private String content;
 }
