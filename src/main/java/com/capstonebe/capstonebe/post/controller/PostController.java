@@ -1,5 +1,7 @@
 package com.capstonebe.capstonebe.post.controller;
 
+import com.capstonebe.capstonebe.comment.dto.response.CommentResponse;
+import com.capstonebe.capstonebe.comment.service.CommentService;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     // 포스트 작성
     @PostMapping
@@ -48,5 +51,19 @@ public class PostController {
     public ResponseEntity<Page<PostResponse>> getAllPosts(Pageable pageable) {
         Page<PostResponse> posts = postService.getAllPosts(pageable);
         return ResponseEntity.ok(posts);
+    }
+
+    // 포스트 단일 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> getPost(Long id) {
+        PostResponse response = postService.getPostById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    // 포스트 별 댓글 조회
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Page<CommentResponse>> getCommentsByPost(@PathVariable Long id, Pageable pageable) {
+        Page<CommentResponse> comments = commentService.getCommentsByPost(id, pageable);
+        return ResponseEntity.ok(comments);
     }
 }
