@@ -43,21 +43,7 @@ public class ImageController {
         return ResponseEntity.ok(imageService.saveImage(request, user.getUsername()));
     }
 
-    @PatchMapping("/edit")
-    // todo : 수정 필요
-    public ResponseEntity<?> editImage(MultipartFile multipartFile,
-                                       @RequestBody @Valid ImageEditRequest request,
-                                       @AuthenticationPrincipal User user) {
-
-        if (user == null) {
-            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
-        }
-
-        return ResponseEntity.ok(imageService.editImage(multipartFile, request));
-    }
-
     @DeleteMapping("{id}")
-    // todo : 수정 필요
     public ResponseEntity<?> deleteFile(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
         if (user == null) {
