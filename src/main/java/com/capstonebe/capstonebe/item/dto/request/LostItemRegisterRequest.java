@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -22,8 +22,8 @@ public class LostItemRegisterRequest {
     @NotNull
     private Double longitude;
 
-    @NotNull
-    private LocalDateTime time;
+    //@NotNull
+    private LocalDate time;
 
     @NotNull
     private String description;

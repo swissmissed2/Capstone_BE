@@ -27,12 +27,16 @@ public enum CustomErrorCode {
 
     // item
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "해당 아이템이 존재하지 않습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
     // place
     NOT_FOUND_PLACE(HttpStatus.NOT_FOUND, "해당 장소가 존재하지 않습니다."),
 
     // category
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "해당 카테고리가 존재하지 않습니다."),
+
+    // comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다."),
 
     // image
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 이미지 찾을 수 없습니다."),

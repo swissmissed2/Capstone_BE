@@ -69,7 +69,6 @@ public class ImageService {
                 .item(item)
                 .user(user)
                 .path(request.getPath())
-                .field(request.getField())
                 .build();
 
         imageRepository.save(image);
@@ -87,21 +86,6 @@ public class ImageService {
         imageRepository.delete(image);
 
         System.out.println("삭제 완료: " + image);
-    }
-
-    public ImageResponse editImage(MultipartFile multipartFile, ImageEditRequest request) {
-
-        Image image = imageRepository.findById(request.getId())
-                .orElseThrow(() -> new CustomException(CustomErrorCode.IMAGE_NOT_FOUND));
-
-        image.updateField(request.getField());
-
-        if (multipartFile != null && !multipartFile.isEmpty()) {
-            deleteInS3(image.getPath());
-            image.updatePath(this.uploadToS3(multipartFile));
-        }
-
-        return ImageResponse.fromEntity(image);
     }
 
     private void deleteInS3(String path) {

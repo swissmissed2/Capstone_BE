@@ -24,14 +24,11 @@ public class Image {
     @Column(nullable = false)
     private String path;
 
-    private String field;
-
     @Builder
-    public Image(Item item, User user, String path, String field) {
+    public Image(Item item, User user, String path) {
         this.item = item;
         this.user = user;
         this.path = path;
-        this.field = field;
     }
 
     public Image() {}
@@ -40,7 +37,4 @@ public class Image {
         this.path = path;
     }
 
-    public void updateField(String field) {
-        this.field = field;
-    }
 }

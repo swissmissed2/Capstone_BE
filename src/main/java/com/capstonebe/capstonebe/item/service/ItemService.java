@@ -6,7 +6,7 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
-import com.capstonebe.capstonebe.item.dto.response.LostItemResponse;
+import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.entity.ItemType;
@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class ItemService {
     private final UserRepository userRepository;
 
     @Transactional
-    public LostItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
+    public ItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
@@ -62,14 +62,18 @@ public class ItemService {
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
 
-        return LostItemResponse.fromEntity(item, places);
+        return ItemResponse.fromEntity(item, places);
     }
 
     @Transactional
-    public LostItemResponse editLostItem(LostItemEditRequest request) {
+    public ItemResponse editLostItem(LostItemEditRequest request, String email) {
 
         Item item = itemRepository.findById(request.getId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+
+        if (!item.getUser().getEmail().equals(email)) {
+            throw new CustomException(CustomErrorCode.FORBIDDEN);
+        }
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
@@ -87,14 +91,18 @@ public class ItemService {
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
 
-        return LostItemResponse.fromEntity(item, places);
+        return ItemResponse.fromEntity(item, places);
     }
 
     @Transactional
-    public void deleteItem(Long id) {
+    public void deleteItem(Long id, String email) {
 
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+
+        if (!item.getUser().getEmail().equals(email)) {
+            throw new CustomException(CustomErrorCode.FORBIDDEN);
+        }
 
         itemRepository.delete(item);
 
@@ -102,7 +110,7 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public LostItemResponse getItemById(Long id) {
+    public ItemResponse getItemById(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
@@ -110,12 +118,12 @@ public class ItemService {
                 .map(ItemPlace::getPlace)
                 .toList();
 
-        return LostItemResponse.fromEntity(item, places);
+        return ItemResponse.fromEntity(item, places);
     }
 
 
     @Transactional(readOnly = true)
-    public List<LostItemResponse> getItemsByType(ItemType type) {
+    public List<ItemResponse> getItemsByType(ItemType type) {
         List<Item> items = itemRepository.findByType(type);
 
         return items.stream()
@@ -123,38 +131,45 @@ public class ItemService {
                     List<Place> places = item.getItemPlaces().stream()
                             .map(ItemPlace::getPlace)
                             .toList();
-                    return LostItemResponse.fromEntity(item, places);
+                    return ItemResponse.fromEntity(item, places);
                 })
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<LostItemResponse> getLostItemsByFilter(Long placeId, Long categoryId) {
+    public List<ItemResponse> getLostItemsByFilter(ItemType type, String placeName, String categoryName, String keyword, LocalDate startDate, LocalDate endDate) {
 
-        List<Item> items;
-        ItemType itemType = ItemType.LOST_ITEM;
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
 
-        if (placeId != null && categoryId != null) {
-            items = itemRepository.findItemsByPlaceCategoryAndType(placeId, categoryId, itemType);
-        }
-        else if (placeId != null) {
-            items = itemRepository.findItemsByPlaceIdAndType(placeId, itemType);
-        }
-        else if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
-            items = itemRepository.findByCategoryAndType(category, itemType);
-        }
-        else {
-            items = itemRepository.findByType(itemType);
-        }
+        List<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, type, keyword, startDate, endDate);
 
         return items.stream()
                 .map(item -> {
                     List<Place> places = item.getItemPlaces().stream()
                             .map(ItemPlace::getPlace)
                             .toList();
-                    return LostItemResponse.fromEntity(item, places);
+                    return ItemResponse.fromEntity(item, places);
+                })
+                .toList();
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<ItemResponse> getLostItemsByUser(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        List<Item> items = itemRepository.findByUser(user);
+
+        return items.stream()
+                .map(item -> {
+                    List<Place> places = item.getItemPlaces().stream()
+                            .map(ItemPlace::getPlace)
+                            .toList();
+                    return ItemResponse.fromEntity(item, places);
                 })
                 .toList();
     }
@@ -192,7 +207,7 @@ public class ItemService {
         request.setName(name);
         request.setLatitude(lat);
         request.setLongitude(lon);
-        request.setTime(LocalDateTime.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
+        request.setTime(LocalDate.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
         request.setDescription(desc);
         request.setCategoryId(categoryId);
         request.setPlaceIds(placeIds);

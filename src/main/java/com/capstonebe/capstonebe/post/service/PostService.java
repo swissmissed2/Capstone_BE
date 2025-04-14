@@ -70,6 +70,13 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    @Transactional
+    public PostResponse getPostById(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+
+        return PostResponse.from(post);
+    }
+
     @Transactional(readOnly = true)
     public Page<PostResponse> getAllPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
