@@ -5,7 +5,6 @@ import com.capstonebe.capstonebe.comment.service.CommentService;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
-import com.capstonebe.capstonebe.post.entity.Post;
 import com.capstonebe.capstonebe.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +54,7 @@ public class PostController {
 
     // 포스트 단일 조회
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(Long id) {
+    public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
         PostResponse response = postService.getPostById(id);
         return ResponseEntity.ok(response);
     }
