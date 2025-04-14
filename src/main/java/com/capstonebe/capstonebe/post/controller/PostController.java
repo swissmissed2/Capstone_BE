@@ -3,7 +3,6 @@ package com.capstonebe.capstonebe.post.controller;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
-import com.capstonebe.capstonebe.post.entity.Post;
 import com.capstonebe.capstonebe.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +47,12 @@ public class PostController {
     public ResponseEntity<Page<PostResponse>> getAllPosts(Pageable pageable) {
         Page<PostResponse> posts = postService.getAllPosts(pageable);
         return ResponseEntity.ok(posts);
+    }
+
+    // 포스트 단일 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        PostResponse response = postService.getPost(id);
+        return ResponseEntity.ok(response);
     }
 }

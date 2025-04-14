@@ -75,4 +75,10 @@ public class PostService {
         Page<Post> posts = postRepository.findAll(pageable);
         return posts.map(PostResponse::from);
     }
+
+    @Transactional(readOnly = true)
+    public PostResponse getPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+        return PostResponse.from(post);
+    }
 }
