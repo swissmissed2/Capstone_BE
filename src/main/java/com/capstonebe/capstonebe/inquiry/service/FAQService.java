@@ -6,8 +6,11 @@ import com.capstonebe.capstonebe.inquiry.dto.request.CreateFAQRequest;
 import com.capstonebe.capstonebe.inquiry.dto.request.UpdateFAQRequest;
 import com.capstonebe.capstonebe.inquiry.dto.response.FAQResponse;
 import com.capstonebe.capstonebe.inquiry.entity.FAQ;
+import com.capstonebe.capstonebe.inquiry.entity.QuestionType;
 import com.capstonebe.capstonebe.inquiry.repository.FAQRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,5 +58,11 @@ public class FAQService {
         }
 
         faqRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FAQResponse> getFAQsByType(QuestionType questionType, Pageable pageable) {
+        Page<FAQ> faqs = faqRepository.findAllByQuestionType(questionType, pageable);
+        return faqs.map(FAQResponse::from);
     }
 }

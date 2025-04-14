@@ -3,9 +3,12 @@ package com.capstonebe.capstonebe.inquiry.controller;
 import com.capstonebe.capstonebe.inquiry.dto.request.CreateFAQRequest;
 import com.capstonebe.capstonebe.inquiry.dto.request.UpdateFAQRequest;
 import com.capstonebe.capstonebe.inquiry.dto.response.FAQResponse;
+import com.capstonebe.capstonebe.inquiry.entity.QuestionType;
 import com.capstonebe.capstonebe.inquiry.service.FAQService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +41,10 @@ public class FAQController {
         return ResponseEntity.noContent().build();
     }
 
+    // 타입 별 FAQ 조회
+    @GetMapping
+    public ResponseEntity<Page<FAQResponse>> getFAQsByType(@RequestParam("type") QuestionType questionType, Pageable pageable) {
+        Page<FAQResponse> faqs = faqService.getFAQsByType(questionType, pageable);
+        return ResponseEntity.ok(faqs);
+    }
 }
