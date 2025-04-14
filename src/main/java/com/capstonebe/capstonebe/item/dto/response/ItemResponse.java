@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-public class LostItemResponse {
+public class ItemResponse {
 
     private Long id;
     private ItemType type;
@@ -27,7 +27,7 @@ public class LostItemResponse {
 
 
     @Builder
-    public LostItemResponse(Long id, ItemType type, String name, Double latitude, Double longitude, LocalDate time, String description, ItemState state, Long categoryId, List<PlaceInfo> places) {
+    public ItemResponse(Long id, ItemType type, String name, Double latitude, Double longitude, LocalDate time, String description, ItemState state, Long categoryId, List<PlaceInfo> places) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -40,8 +40,8 @@ public class LostItemResponse {
         this.places = places;
     }
 
-    public static LostItemResponse fromEntity(Item item, List<Place> places) {
-        return LostItemResponse.builder()
+    public static ItemResponse fromEntity(Item item, List<Place> places) {
+        return ItemResponse.builder()
                 .id(item.getId())
                 .type(item.getType())
                 .name(item.getName())

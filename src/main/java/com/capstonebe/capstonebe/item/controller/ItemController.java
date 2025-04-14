@@ -34,9 +34,7 @@ public class ItemController {
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
         }
 
-        String email = user.getUsername();
-
-        return ResponseEntity.ok(itemService.resisterLostItem(request, email));
+        return ResponseEntity.ok(itemService.resisterLostItem(request, user.getUsername()));
     }
 
     // 분실물 수정
@@ -48,7 +46,7 @@ public class ItemController {
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
         }
 
-        return ResponseEntity.ok(itemService.editLostItem(request));
+        return ResponseEntity.ok(itemService.editLostItem(request, user.getUsername()));
     }
 
     // 물건 삭제
@@ -59,7 +57,8 @@ public class ItemController {
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
         }
 
-        itemService.deleteItem(id);
+        itemService.deleteItem(id, user.getUsername());
+
         return ResponseEntity.ok().build();
     }
 
