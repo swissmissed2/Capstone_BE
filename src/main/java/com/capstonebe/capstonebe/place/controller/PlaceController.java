@@ -53,6 +53,13 @@ public class PlaceController {
         return ResponseEntity.ok().build();
     }
 
+    // 장소 전체 목록 조회
+    @GetMapping
+    public ResponseEntity<?> getAllPlaces() {
+
+        return ResponseEntity.ok(placeService.getAllPlaces());
+    }
+
     private void validateAdmin(String token) {
         if (token == null || !userService.isAdmin(jwtUtil.extractEmail(token))) {
             throw new CustomException(CustomErrorCode.IS_NOT_ADMIN);

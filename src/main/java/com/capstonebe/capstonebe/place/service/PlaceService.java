@@ -1,10 +1,11 @@
 package com.capstonebe.capstonebe.place.service;
 
+import com.capstonebe.capstonebe.category.dto.response.CategoryResponse;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.place.dto.request.PlaceEditRequest;
 import com.capstonebe.capstonebe.place.dto.request.PlaceRegisterRequest;
-import com.capstonebe.capstonebe.place.dto.response.PlaceRegisterResponse;
+import com.capstonebe.capstonebe.place.dto.response.PlaceResponse;
 import com.capstonebe.capstonebe.place.entity.Place;
 import com.capstonebe.capstonebe.place.repository.PlaceRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class PlaceService {
     PlaceRepository placeRepository;
 
     @Transactional
-    public PlaceRegisterResponse registerPlace(PlaceRegisterRequest placeRegisterRequest) {
+    public PlaceResponse registerPlace(PlaceRegisterRequest placeRegisterRequest) {
 
         Place place = Place.builder()
                 .name(placeRegisterRequest.getName())
@@ -28,11 +29,11 @@ public class PlaceService {
                 .longitude(placeRegisterRequest.getLongitude())
                 .build();
 
-        return PlaceRegisterResponse.fromEntity(placeRepository.save(place));
+        return PlaceResponse.fromEntity(placeRepository.save(place));
     }
 
     @Transactional
-    public PlaceRegisterResponse editPlace(PlaceEditRequest placeEditRequest) {
+    public PlaceResponse editPlace(PlaceEditRequest placeEditRequest) {
 
         Place place = placeRepository.findById(placeEditRequest.getId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_PLACE));
@@ -43,7 +44,7 @@ public class PlaceService {
                 placeEditRequest.getLongitude()
         );
 
-        return PlaceRegisterResponse.fromEntity(placeRepository.save(place));
+        return PlaceResponse.fromEntity(placeRepository.save(place));
     }
 
     @Transactional
@@ -54,6 +55,17 @@ public class PlaceService {
 
         placeRepository.delete(place);
     }
+
+    @Transactional(readOnly = true)
+    public List<PlaceResponse> getAllPlaces() {
+
+        List<Place> categories = placeRepository.findAll();
+
+        return categories.stream()
+                .map(PlaceResponse::fromEntity)
+                .toList();
+    }
+
 
 
     // 테스트용

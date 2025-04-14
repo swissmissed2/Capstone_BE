@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class PlaceRegisterResponse {
+public class PlaceResponse {
 
     private String name;
 
@@ -15,14 +15,14 @@ public class PlaceRegisterResponse {
     private Double longitude;
 
     @Builder
-    public PlaceRegisterResponse(String name, Double latitude, Double longitude) {
+    public PlaceResponse(String name, Double latitude, Double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static PlaceRegisterResponse fromEntity(Place place) {
-        return PlaceRegisterResponse.builder()
+    public static PlaceResponse fromEntity(Place place) {
+        return PlaceResponse.builder()
                 .name(place.getName())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
