@@ -61,6 +61,7 @@ public class PlaceController {
     }
 
     private void validateAdmin(String token) {
+
         if (token == null || !userService.isAdmin(jwtUtil.extractEmail(token))) {
             throw new CustomException(CustomErrorCode.IS_NOT_ADMIN);
         }
