@@ -3,6 +3,8 @@ package com.capstonebe.capstonebe.user.controller;
 import com.capstonebe.capstonebe.comment.dto.response.CommentResponse;
 import com.capstonebe.capstonebe.comment.service.CommentService;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
+import com.capstonebe.capstonebe.inquiry.service.InquiryService;
 import com.capstonebe.capstonebe.security.JwtUtil;
 import com.capstonebe.capstonebe.user.dto.request.UserLoginRequest;
 import com.capstonebe.capstonebe.user.dto.request.UserRegisterRequest;
@@ -34,6 +36,7 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final CommentService commentService;
+    private final InquiryService inquiryService;
 
     // 회원 가입
     @PostMapping
@@ -151,10 +154,17 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    // 유저 별 댓글 조회
+    // 회원 별 댓글 조회
     @GetMapping("/{id}/comments")
     public ResponseEntity<Page<CommentResponse>> getCommentsByUser(@PathVariable Long id, Pageable pageable) {
         Page<CommentResponse> comments = commentService.getCommentsByUser(id, pageable);
         return ResponseEntity.ok(comments);
+    }
+
+    // 회원 별 문의 조회
+    @GetMapping("/{id}/inquiries")
+    public ResponseEntity<Page<InquiryResponse>> getInquiriesByUser(@PathVariable Long id, Pageable pageable) {
+        Page<InquiryResponse> inquiries = inquiryService.getInquiriesByUser(id, pageable);
+        return ResponseEntity.ok(inquiries);
     }
 }

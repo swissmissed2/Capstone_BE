@@ -10,6 +10,8 @@ import com.capstonebe.capstonebe.inquiry.repository.InquiryRepository;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +52,17 @@ public class InquiryService {
         }
 
         inquiryRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InquiryResponse> getAllInquiries(Pageable pageable) {
+        Page<Inquiry> inquiries = inquiryRepository.findAll(pageable);
+        return inquiries.map(InquiryResponse::from);
+    }
+
+    @Transactional
+    public Page<InquiryResponse> getInquiriesByUser(Long userId, Pageable pageable) {
+        Page<Inquiry> inquiries = inquiryRepository.findAllByUserId(userId, pageable);
+        return inquiries.map(InquiryResponse::from);
     }
 }
