@@ -6,6 +6,8 @@ import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
 import com.capstonebe.capstonebe.inquiry.service.InquiryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,5 +40,12 @@ public class InquiryController {
     public ResponseEntity<Void> deleteInquiry(@PathVariable Long id) {
         inquiryService.deleteInquiry(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 문의 전체 조회
+    @GetMapping
+    public ResponseEntity<Page<InquiryResponse>> getAllInquiries(Pageable pageable) {
+        Page<InquiryResponse> inquiries = inquiryService.getAllInquiries(pageable);
+        return ResponseEntity.ok(inquiries);
     }
 }
