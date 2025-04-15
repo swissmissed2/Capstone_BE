@@ -41,9 +41,11 @@ public class User {
         this.isActive = false;
     }
 
-    public void update(String password, String name, String phone) {
-        this.password = password;
+    public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updatePhone(String phone) {
         this.phone = phone;
     }
 

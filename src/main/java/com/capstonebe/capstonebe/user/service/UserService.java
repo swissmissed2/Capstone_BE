@@ -50,17 +50,18 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String email, UserUpdateRequest updateRequest) {
+    public UserResponse updateUser(String email, UserUpdateRequest updateRequest) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
-            String encodedPassword = passwordEncoder.encode(updateRequest.getPassword());
-            user.update(encodedPassword, updateRequest.getName(), updateRequest.getPhone());
-        } else {
-            user.update(user.getPassword(), updateRequest.getName(), updateRequest.getPhone());
+        if(updateRequest.getName() != null) {
+            user.updateName(updateRequest.getName());
         }
 
-        return user;
+        if(updateRequest.getPhone() != null) {
+            user.updatePhone(updateRequest.getPhone());
+        }
+
+        return UserResponse.from(user);
     }
 
     @Transactional

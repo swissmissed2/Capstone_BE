@@ -50,11 +50,11 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@CookieValue(value = "jwt", required = false) String token, @RequestBody @Valid UserUpdateRequest updateRequest) {
         String email = jwtUtil.extractEmail(token);
-        User updatedUser = userService.updateUser(email, updateRequest);
-        return ResponseEntity.ok(UserResponse.from(updatedUser));
+        UserResponse updatedUser = userService.updateUser(email, updateRequest);
+        return ResponseEntity.ok(updatedUser);
     }
 
     // 회원 탈퇴
