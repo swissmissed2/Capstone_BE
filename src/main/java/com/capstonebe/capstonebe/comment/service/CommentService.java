@@ -55,8 +55,9 @@ public class CommentService {
     }
 
     @Transactional
-    public Page<CommentResponse> getCommentsByUser(Long userId, Pageable pageable) {
-        Page<Comment> comments = commentRepository.findAllByUserId(userId, pageable);
+    public Page<CommentResponse> getCommentsByUser(String email, Pageable pageable) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Page<Comment> comments = commentRepository.findAllByUserId(user.getId(), pageable);
         return comments.map(CommentResponse::from);
     }
 }

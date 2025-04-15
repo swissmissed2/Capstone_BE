@@ -2,9 +2,11 @@ package com.capstonebe.capstonebe.user.controller;
 
 import com.capstonebe.capstonebe.comment.dto.response.CommentResponse;
 import com.capstonebe.capstonebe.comment.service.CommentService;
+import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
 import com.capstonebe.capstonebe.inquiry.service.InquiryService;
+import com.capstonebe.capstonebe.item.service.ItemService;
 import com.capstonebe.capstonebe.security.JwtUtil;
 import com.capstonebe.capstonebe.user.dto.request.UserLoginRequest;
 import com.capstonebe.capstonebe.user.dto.request.UserRegisterRequest;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -37,6 +40,7 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final CommentService commentService;
     private final InquiryService inquiryService;
+    private final ItemService itemService;
 
     // 회원 가입
     @PostMapping
@@ -155,16 +159,36 @@ public class UserController {
     }
 
     // 회원 별 댓글 조회
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<Page<CommentResponse>> getCommentsByUser(@PathVariable Long id, Pageable pageable) {
-        Page<CommentResponse> comments = commentService.getCommentsByUser(id, pageable);
+    @GetMapping("/comments")
+    public ResponseEntity<Page<CommentResponse>> getCommentsByUser(@CookieValue(value = "jwt", required = false) String token, Pageable pageable) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        Page<CommentResponse> comments = commentService.getCommentsByUser(email, pageable);
         return ResponseEntity.ok(comments);
     }
 
     // 회원 별 문의 조회
-    @GetMapping("/{id}/inquiries")
-    public ResponseEntity<Page<InquiryResponse>> getInquiriesByUser(@PathVariable Long id, Pageable pageable) {
-        Page<InquiryResponse> inquiries = inquiryService.getInquiriesByUser(id, pageable);
+    @GetMapping("/inquiries")
+    public ResponseEntity<Page<InquiryResponse>> getInquiriesByUser(@CookieValue(value = "jwt", required = false) String token, Pageable pageable) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        Page<InquiryResponse> inquiries = inquiryService.getInquiriesByUser(email, pageable);
         return ResponseEntity.ok(inquiries);
+    }
+
+    // 회원 별 아이템 조회
+    @GetMapping("/items")
+    public ResponseEntity<?> getLostItemsByUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        return ResponseEntity.ok(itemService.getLostItemsByUser(user.getUsername()));
     }
 }
