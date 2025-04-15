@@ -61,8 +61,9 @@ public class InquiryService {
     }
 
     @Transactional
-    public Page<InquiryResponse> getInquiriesByUser(Long userId, Pageable pageable) {
-        Page<Inquiry> inquiries = inquiryRepository.findAllByUserId(userId, pageable);
+    public Page<InquiryResponse> getInquiriesByUser(String email, Pageable pageable) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Page<Inquiry> inquiries = inquiryRepository.findAllByUserId(user.getId(), pageable);
         return inquiries.map(InquiryResponse::from);
     }
 }
