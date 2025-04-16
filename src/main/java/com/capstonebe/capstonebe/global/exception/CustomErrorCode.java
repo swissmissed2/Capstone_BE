@@ -46,6 +46,10 @@ public enum CustomErrorCode {
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "삭제하려는 파일이 존재하지 않습니다."),
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 이미지 형식입니다."),
 
+    // keyword
+    DUPLICATED_KEYWORD(HttpStatus.BAD_REQUEST, "이미 등록된 키워드입니다."),
+    NOT_FOUND_KEYWORD(HttpStatus.NOT_FOUND, "해당 키워드를 찾을 수 없습니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
