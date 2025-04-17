@@ -81,4 +81,11 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
         return PostResponse.from(post);
     }
+
+    @Transactional
+    public Page<PostResponse> getPostsByUser(String email, Pageable pageable) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Page<Post> posts = postRepository.findAllByUserId(user.getId(), pageable);
+        return posts.map(PostResponse::from);
+    }
 }

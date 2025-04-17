@@ -7,6 +7,8 @@ import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
 import com.capstonebe.capstonebe.inquiry.service.InquiryService;
 import com.capstonebe.capstonebe.item.service.ItemService;
+import com.capstonebe.capstonebe.post.dto.response.PostResponse;
+import com.capstonebe.capstonebe.post.service.PostService;
 import com.capstonebe.capstonebe.security.JwtUtil;
 import com.capstonebe.capstonebe.user.dto.request.UserLoginRequest;
 import com.capstonebe.capstonebe.user.dto.request.UserRegisterRequest;
@@ -38,6 +40,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final PostService postService;
     private final CommentService commentService;
     private final InquiryService inquiryService;
     private final ItemService itemService;
@@ -156,6 +159,18 @@ public class UserController {
     public ResponseEntity<Page<UserResponse>> searchUsers(@RequestParam String keyword, Pageable pageable) {
         Page<UserResponse> users = userService.searchUsers(keyword, pageable);
         return ResponseEntity.ok(users);
+    }
+
+    // 회원 별 포스트 조회
+    @GetMapping("/posts")
+    public ResponseEntity<Page<PostResponse>> getPostsByUser(@CookieValue(value = "jwt", required = false) String token, Pageable pageable) {
+        if(token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        Page<PostResponse> posts = postService.getPostsByUser(email, pageable);
+        return ResponseEntity.ok(posts);
     }
 
     // 회원 별 댓글 조회
