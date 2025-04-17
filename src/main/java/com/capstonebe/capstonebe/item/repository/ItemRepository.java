@@ -3,6 +3,8 @@ package com.capstonebe.capstonebe.item.repository;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,7 +30,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     // 최신순
     @Query("""
     SELECT i FROM Item i
-    JOIN FETCH i.itemPlaces ip
+    JOIN i.itemPlaces ip
     JOIN ip.place p
     JOIN i.category c
     WHERE i.type = :itemType
@@ -43,17 +45,16 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     AND (:endDate IS NULL OR i.time <= :endDate)
     ORDER BY i.time DESC
 """)
-    List<Item> findItemsByFilter(
+    Page<Item> findItemsByFilter(
             @Param("placeName") String placeName,
             @Param("categoryName") String categoryName,
             @Param("itemType") ItemType itemType,
             @Param("keyword") String keyword,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
 
-
-
-    List<Item> findByUser(User user);
+    Page<Item> findByUser(User user, Pageable pageable);
 }

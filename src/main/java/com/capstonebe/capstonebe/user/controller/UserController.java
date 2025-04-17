@@ -199,11 +199,11 @@ public class UserController {
 
     // 회원 별 아이템 조회
     @GetMapping("/items")
-    public ResponseEntity<?> getLostItemsByUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public ResponseEntity<?> getLostItemsByUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user, Pageable pageable) {
         if (user == null) {
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
         }
 
-        return ResponseEntity.ok(itemService.getLostItemsByUser(user.getUsername()));
+        return ResponseEntity.ok(itemService.getLostItemsByUser(user.getUsername(), pageable));
     }
 }
