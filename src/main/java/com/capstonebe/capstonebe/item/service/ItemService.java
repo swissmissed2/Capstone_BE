@@ -18,6 +18,8 @@ import com.capstonebe.capstonebe.place.repository.PlaceRepository;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -137,41 +139,39 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemResponse> getLostItemsByFilter(ItemType type, String placeName, String categoryName, String keyword, LocalDate startDate, LocalDate endDate) {
+    public Page<ItemResponse> getItemsByFilter(ItemType type, String placeName, String categoryName,
+                                               String keyword, LocalDate startDate, LocalDate endDate,
+                                               Pageable pageable) {
 
         if (keyword != null && keyword.trim().isEmpty()) {
             keyword = null;
         }
 
-        List<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, type, keyword, startDate, endDate);
+        Page<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, type, keyword, startDate, endDate, pageable);
 
-        return items.stream()
-                .map(item -> {
-                    List<Place> places = item.getItemPlaces().stream()
-                            .map(ItemPlace::getPlace)
-                            .toList();
-                    return ItemResponse.fromEntity(item, places);
-                })
-                .toList();
+        return items.map(item -> {
+            List<Place> places = item.getItemPlaces().stream()
+                    .map(ItemPlace::getPlace)
+                    .toList();
+            return ItemResponse.fromEntity(item, places);
+        });
     }
 
 
     @Transactional(readOnly = true)
-    public List<ItemResponse> getLostItemsByUser(String email) {
+    public Page<ItemResponse> getLostItemsByUser(String email, Pageable pageable) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        List<Item> items = itemRepository.findByUser(user);
+        Page<Item> items = itemRepository.findByUser(user, pageable);
 
-        return items.stream()
-                .map(item -> {
-                    List<Place> places = item.getItemPlaces().stream()
-                            .map(ItemPlace::getPlace)
-                            .toList();
-                    return ItemResponse.fromEntity(item, places);
-                })
-                .toList();
+        return items.map(item -> {
+            List<Place> places = item.getItemPlaces().stream()
+                    .map(ItemPlace::getPlace)
+                    .toList();
+            return ItemResponse.fromEntity(item, places);
+        });
     }
 
     private void saveItemPlaces(Item item, List<Place> places) {
@@ -183,7 +183,6 @@ public class ItemService {
             itemPlaceRepository.save(itemPlace);
         }
     }
-
 
 
     // 테스트용
@@ -213,6 +212,5 @@ public class ItemService {
         request.setPlaceIds(placeIds);
         return request;
     }
-
 
 }

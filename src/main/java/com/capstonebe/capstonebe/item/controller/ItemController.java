@@ -7,6 +7,7 @@ import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.service.ItemService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,15 +72,16 @@ public class ItemController {
 
     // 물건 전체 목록 조회 또는 필터 적용하여 분실물 목록 조회 + 검색어 + 날짜
     @GetMapping("/list/{type}")
-    public ResponseEntity<?> getLostItemsByFilter(@PathVariable ItemType type,
-                                                  @RequestParam(required = false) String place,
-                                                  @RequestParam(required = false) String category,
-                                                  @RequestParam(required = false) String keyword,
-                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+    public ResponseEntity<?> getItemsByFilter(@PathVariable ItemType type,
+                                              @RequestParam(required = false) String place,
+                                              @RequestParam(required = false) String category,
+                                              @RequestParam(required = false) String keyword,
+                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                              Pageable pageable) {
 
         //System.out.println(place + " " + category + " " + keyword + " " + startDate + " " + endDate);
-        return ResponseEntity.ok(itemService.getLostItemsByFilter(type, place, category, keyword, startDate, endDate));
+        return ResponseEntity.ok(itemService.getItemsByFilter(type, place, category, keyword, startDate, endDate, pageable));
     }
 
     // 테스트용
