@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/images")
 @AllArgsConstructor
@@ -22,14 +25,17 @@ public class ImageController {
 
     // 이미지 업로드
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImageFile(@RequestParam MultipartFile multipartFile,
+    public ResponseEntity<?> uploadImages(@RequestParam(required = false) List<MultipartFile> multipartFiles,
                                          @AuthenticationPrincipal User user) {
 
         if (user == null)
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
 
-        String imageUrl = imageService.uploadToS3(multipartFile);
-        return ResponseEntity.ok(imageUrl);
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            throw new CustomException(CustomErrorCode.EMPTY_IMAGE_LIST);
+        }
+
+        return ResponseEntity.ok(imageService.uploadImages(multipartFiles));
     }
 
     // 이미지 객체 등록
@@ -40,7 +46,7 @@ public class ImageController {
         if (user == null)
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
 
-        return ResponseEntity.ok(imageService.saveImage(request, user.getUsername()));
+        return ResponseEntity.ok(imageService.registerImage(request, user.getUsername()));
     }
 
     @DeleteMapping("{id}")

@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,6 +38,13 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+
+    public List<String> uploadImages(List<MultipartFile> multipartFiles) {
+
+            return multipartFiles.stream()
+                    .map(this::uploadToS3)
+                    .toList();
+    }
 
     public String uploadToS3(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) {
@@ -59,21 +67,24 @@ public class ImageService {
     }
 
     @Transactional
-    public ImageResponse saveImage(ImageRegisterRequest request, String userEmail) {
+    public ImageResponse registerImage(ImageRegisterRequest request, String userEmail) {
+
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
-        Image image = Image.builder()
-                .item(item)
-                .user(user)
-                .path(request.getPath())
-                .build();
+        List<Image> images = request.getPaths().stream()
+                .map(path -> Image.builder()
+                        .item(item)
+                        .user(user)
+                        .path(path)
+                        .build())
+                .toList();
 
-        imageRepository.save(image);
+        imageRepository.saveAll(images);
 
-        return ImageResponse.fromEntity(image);
+        return ImageResponse.from(images);
     }
 
     @Transactional

@@ -1,8 +1,10 @@
 package com.capstonebe.capstonebe.image.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class ImageRegisterRequest {
@@ -10,7 +12,6 @@ public class ImageRegisterRequest {
     @NotNull
     private Long itemId;
 
-    @NotBlank
-    private String path;
-
+    @NotEmpty
+    private List<String> paths;
 }
