@@ -45,6 +45,7 @@ public enum CustomErrorCode {
     IMAGE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제 중 오류가 발생했습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "삭제하려는 파일이 존재하지 않습니다."),
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "올바르지 않은 이미지 형식입니다."),
+    EMPTY_IMAGE_LIST(HttpStatus.BAD_REQUEST, "업로드할 이미지가 없습니다."),
 
     // keyword
     DUPLICATED_KEYWORD(HttpStatus.BAD_REQUEST, "이미 등록된 키워드입니다."),
