@@ -31,6 +31,7 @@ public class KeywordController {
         return ResponseEntity.ok().build();
     }
 
+    // todo : 유저 컨트롤러로 옮겨야 함
     @GetMapping
     public ResponseEntity<?> getKeywordByUser(@AuthenticationPrincipal User user) {
 

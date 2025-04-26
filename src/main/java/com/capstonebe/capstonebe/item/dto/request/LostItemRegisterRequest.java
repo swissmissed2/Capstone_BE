@@ -16,16 +16,16 @@ public class LostItemRegisterRequest {
     @NotBlank
     private String name;
 
-    @NotNull
+    //@NotNull
     private Double latitude;
 
-    @NotNull
+    //@NotNull
     private Double longitude;
 
     //@NotNull
     private LocalDate time;
 
-    @NotNull
+    @NotBlank
     private String description;
 
     @NotNull
