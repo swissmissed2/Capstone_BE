@@ -12,7 +12,7 @@ public class MatchingRequest {
     @NotNull
     private Long foundItemId;
 
-    //@NotEmpty
+    @NotEmpty
     private List<Long> lostItemId;
 
 }

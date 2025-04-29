@@ -29,7 +29,7 @@ public class MatchingService {
                 .collect(Collectors.toList());
 
         String content = "등록하신 분실물과 유사한 습득물이 있습니다.";
-        String url = "/api/items" + request.getFoundItemId();
+        String url = "/api/items/" + request.getFoundItemId();
 
         receivers.forEach(user ->
                 notifyService.send(user, NotifyType.MATCHING, content, url)
