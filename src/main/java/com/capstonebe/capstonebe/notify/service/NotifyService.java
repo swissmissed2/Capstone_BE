@@ -7,12 +7,15 @@ import com.capstonebe.capstonebe.notify.repository.EmitterRepository;
 import com.capstonebe.capstonebe.notify.repository.NotifyRepository;
 import com.capstonebe.capstonebe.user.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class NotifyService {
@@ -69,19 +72,25 @@ public class NotifyService {
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
     }
 
-    // 지정된 수신자에게 알림 전송
+    // 지정된 수신자에게 알림 전송(비동기)
+    @Async
     public void send(User receiver, NotifyType notifyType, String content, String url) {
-        Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url));
 
-        String receiverEmail = receiver.getEmail();
-        String eventId = receiverEmail + "_" + System.currentTimeMillis();
-        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
-        emitters.forEach(
-                (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notify);
-                    sendNotification(emitter, eventId, key, NotifyResponse.fromEntity(notify));
-                }
-        );
+        try {
+            Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url));
+
+            String receiverEmail = receiver.getEmail();
+            String eventId = receiverEmail + "_" + System.currentTimeMillis();
+            Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
+            emitters.forEach(
+                    (key, emitter) -> {
+                        emitterRepository.saveEventCache(key, notify);
+                        sendNotification(emitter, eventId, key, NotifyResponse.fromEntity(notify));
+                    }
+            );
+        } catch (Exception e) {
+            log.error("알림 전송 실패: {}", e.getMessage());
+        }
     }
 
     private Notify createNotify(User receiver, NotifyType notifyType, String content, String url) {
