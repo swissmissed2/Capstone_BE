@@ -49,12 +49,11 @@ public class KeywordService {
 
     public void deleteKeyword(Long id, String email) {
 
-        Keyword keyword = keywordRepository.findById(id)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_KEYWORD));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        if (!keyword.getUser().getEmail().equals(email)) {
-            throw new CustomException(CustomErrorCode.FORBIDDEN);
-        }
+        Keyword keyword = keywordRepository.findByUserAndId(user, id)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_KEYWORD));
 
         keywordRepository.delete(keyword);
     }

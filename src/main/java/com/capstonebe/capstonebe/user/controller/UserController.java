@@ -7,6 +7,7 @@ import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
 import com.capstonebe.capstonebe.inquiry.service.InquiryService;
 import com.capstonebe.capstonebe.item.service.ItemService;
+import com.capstonebe.capstonebe.keword.service.KeywordService;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
 import com.capstonebe.capstonebe.post.service.PostService;
 import com.capstonebe.capstonebe.security.JwtUtil;
@@ -44,6 +45,7 @@ public class UserController {
     private final CommentService commentService;
     private final InquiryService inquiryService;
     private final ItemService itemService;
+    private final KeywordService keywordService;
 
     // 회원 가입
     @PostMapping
@@ -205,5 +207,12 @@ public class UserController {
         }
 
         return ResponseEntity.ok(itemService.getLostItemsByUser(user.getUsername(), pageable));
+    }
+
+    // 유저 별 키워드 조회
+    @GetMapping("/keywords")
+    public ResponseEntity<?> getKeywordByUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+
+        return ResponseEntity.ok(keywordService.getKeywordByUser(user.getUsername()));
     }
 }
