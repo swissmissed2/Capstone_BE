@@ -31,9 +31,4 @@ public class KeywordController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<?> getKeywordByUser(@AuthenticationPrincipal User user) {
-
-        return ResponseEntity.ok(keywordService.getKeywordByUser(user.getUsername()));
-    }
 }

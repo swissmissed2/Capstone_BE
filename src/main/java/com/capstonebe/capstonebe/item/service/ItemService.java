@@ -4,6 +4,7 @@ import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.category.repository.CategoryRepository;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
@@ -54,6 +55,34 @@ public class ItemService {
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .time(request.getTime())
+                .description(request.getDescription())
+                .itemState(ItemState.NOT_RETURNED)
+                .category(category)
+                .build();
+
+        itemRepository.save(item);
+
+        List<Place> places = placeRepository.findAllById(request.getPlaceIds());
+        saveItemPlaces(item, places);
+
+        return ItemResponse.fromEntity(item, places);
+    }
+
+    @Transactional
+    public ItemResponse registerFoundItem(FoundItemRegisterRequest request) {
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_CATEGORY));
+
+        User user = userRepository.findById(1L)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Item item = Item.builder()
+                .user(user)
+                .type(ItemType.FOUND_ITEM)
+                .name(request.getName())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .description(request.getDescription())
                 .itemState(ItemState.NOT_RETURNED)
                 .category(category)
@@ -185,6 +214,8 @@ public class ItemService {
     }
 
 
+
+
     // 테스트용
     @Transactional
     public void registerFixedTestItems(String email) {
@@ -202,6 +233,7 @@ public class ItemService {
     }
 
     private LostItemRegisterRequest createRequest(String name, Double lat, Double lon, String desc, Long categoryId, List<Long> placeIds) {
+
         LostItemRegisterRequest request = new LostItemRegisterRequest();
         request.setName(name);
         request.setLatitude(lat);

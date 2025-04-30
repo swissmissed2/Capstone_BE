@@ -2,6 +2,7 @@ package com.capstonebe.capstonebe.item.controller;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.entity.ItemType;
@@ -27,7 +28,7 @@ public class ItemController {
     }
 
     // 분실물 등록
-    @PostMapping("/register")
+    @PostMapping("/lost/register")
     public ResponseEntity<?> resisterLostItem(@RequestBody @Valid LostItemRegisterRequest request,
                                               @AuthenticationPrincipal User user) {
 
@@ -36,6 +37,13 @@ public class ItemController {
         }
 
         return ResponseEntity.ok(itemService.resisterLostItem(request, user.getUsername()));
+    }
+
+    // 습득물 등록
+    @PostMapping("/found/register")
+    public ResponseEntity<?> registerFoundItem(@RequestBody @Valid FoundItemRegisterRequest request) {
+
+        return ResponseEntity.ok(itemService.registerFoundItem(request));
     }
 
     // 분실물 수정
@@ -84,10 +92,16 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemsByFilter(type, place, category, keyword, startDate, endDate, pageable));
     }
 
+    // todo : 물건 반환 처리
+
+
+
     // 테스트용
     @PostMapping("/test-bulk-register")
     public ResponseEntity<String> registerTestItems(@AuthenticationPrincipal User user) {
         itemService.registerFixedTestItems(user.getUsername());
         return ResponseEntity.ok("테스트용 Item 5개 등록 완료");
     }
+
+
 }
