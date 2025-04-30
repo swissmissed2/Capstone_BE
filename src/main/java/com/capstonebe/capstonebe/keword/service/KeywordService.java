@@ -80,22 +80,18 @@ public class KeywordService {
         String title = post.getTitle();
         String content = post.getContent();
 
-        List<Keyword> keywords = keywordRepository.findAll();
-
-        List<Keyword> matchedKeywords = keywords.stream()
+        keywordRepository.findAll().stream()
                 .filter(keyword ->
                         (title != null && title.contains(keyword.getKeyword())) ||
                                 (content != null && content.contains(keyword.getKeyword()))
                 )
-                .toList();
+                .forEach(keyword -> {
+                    User user = keyword.getUser();
+                    String notifyContent = "‘" + keyword.getKeyword() + "’(이)가 포함된 게시글이 등록되었습니다.";
+                    String url = "/api/v1/posts/" + post.getId();
 
-        for (Keyword keyword : matchedKeywords) {
-            User user = keyword.getUser();
-            String notifyContent = "‘" + keyword.getKeyword() + "’가 포함된 게시글이 등록되었습니다.";
-            String url = "/api/v1/posts/" + post.getId();
-
-            notifyService.send(user, NotifyType.KEYWORD, notifyContent, url);
-        }
+                    notifyService.send(user, NotifyType.KEYWORD, notifyContent, url);
+                });
     }
 
 
