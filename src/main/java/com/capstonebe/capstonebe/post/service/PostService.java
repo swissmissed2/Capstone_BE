@@ -4,6 +4,7 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
+import com.capstonebe.capstonebe.keword.service.KeywordService;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
@@ -24,6 +25,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final KeywordService keywordService;
 
     @Transactional
     public PostResponse createPost(String email, CreatePostRequest createRequest) {
@@ -38,6 +40,9 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        keywordService.sendKeywordMatchingNotify(post);
+
         return PostResponse.from(post);
     }
 
@@ -50,13 +55,20 @@ public class PostService {
             post.updateItem(item);
         }
 
+        boolean isUpdated = false;
+
         if (updateRequest.getTitle() != null) {
             post.updateTitle(updateRequest.getTitle());
+            isUpdated = true;
         }
 
         if (updateRequest.getContent() != null) {
             post.updateContent(updateRequest.getContent());
+            isUpdated = true;
         }
+
+        if (isUpdated)
+            keywordService.sendKeywordMatchingNotify(post);
 
         return PostResponse.from(post);
     }

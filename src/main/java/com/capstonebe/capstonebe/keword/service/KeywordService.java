@@ -6,6 +6,9 @@ import com.capstonebe.capstonebe.keword.dto.request.KeywordRegisterRequest;
 import com.capstonebe.capstonebe.keword.dto.response.KeywordResponse;
 import com.capstonebe.capstonebe.keword.entity.Keyword;
 import com.capstonebe.capstonebe.keword.repository.KeywordRepository;
+import com.capstonebe.capstonebe.notify.entity.NotifyType;
+import com.capstonebe.capstonebe.notify.service.NotifyService;
+import com.capstonebe.capstonebe.post.entity.Post;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,7 @@ public class KeywordService {
 
     private final KeywordRepository keywordRepository;
     private final UserRepository userRepository;
+    private final NotifyService notifyService;
 
     public KeywordResponse registerKeyword(KeywordRegisterRequest request, String email) {
 
@@ -69,5 +73,26 @@ public class KeywordService {
                 .map(KeywordResponse::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    // 게시글 제목이나 내용에 포함된 키워드가 있다면 해당 유저에게 알림 전송
+    public void sendKeywordMatchingNotify(Post post) {
+
+        String title = post.getTitle();
+        String content = post.getContent();
+
+        keywordRepository.findAll().stream()
+                .filter(keyword ->
+                        (title != null && title.contains(keyword.getKeyword())) ||
+                                (content != null && content.contains(keyword.getKeyword()))
+                )
+                .forEach(keyword -> {
+                    User user = keyword.getUser();
+                    String notifyContent = "‘" + keyword.getKeyword() + "’(이)가 포함된 게시글이 등록되었습니다.";
+                    String url = "/api/v1/posts/" + post.getId();
+
+                    notifyService.send(user, NotifyType.KEYWORD, notifyContent, url);
+                });
+    }
+
 
 }
