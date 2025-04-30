@@ -23,17 +23,16 @@ public class MatchingService {
 
         List<Item> lostItems = itemRepository.findAllById(request.getLostItemId());
 
-        List<User> receivers = lostItems.stream()
-                .map(Item::getUser)
-                .distinct()
-                .collect(Collectors.toList());
-
         String content = "등록하신 분실물과 유사한 습득물이 있습니다.";
         String url = "/api/items/" + request.getFoundItemId();
 
-        receivers.forEach(user ->
-                notifyService.send(user, NotifyType.MATCHING, content, url)
-        );
+        lostItems.stream()
+                .map(Item::getUser)
+                .distinct()
+                .peek(User::getEmail)
+                .forEach(user ->
+                        notifyService.send(user, NotifyType.MATCHING, content, url)
+                );
     }
 
 }
