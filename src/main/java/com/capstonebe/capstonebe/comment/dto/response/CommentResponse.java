@@ -5,17 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
 public class CommentResponse {
     private final Long userId;
     private final String content;
+    private final LocalDateTime createdAt;
 
     public static CommentResponse from(Comment comment) {
         return new CommentResponse(
                 comment.getUser().getId(),
-                comment.getContent()
+                comment.getContent(),
+                comment.getCreatedAt()
         );
     }
 }
