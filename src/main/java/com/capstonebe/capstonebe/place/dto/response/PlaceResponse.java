@@ -8,6 +8,8 @@ import lombok.Getter;
 @Getter
 public class PlaceResponse {
 
+    private Long id;
+
     private String name;
 
     private Double latitude;
@@ -15,7 +17,8 @@ public class PlaceResponse {
     private Double longitude;
 
     @Builder
-    public PlaceResponse(String name, Double latitude, Double longitude) {
+    public PlaceResponse(Long id, String name, Double latitude, Double longitude) {
+        this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -23,6 +26,7 @@ public class PlaceResponse {
 
     public static PlaceResponse fromEntity(Place place) {
         return PlaceResponse.builder()
+                .id(place.getId())
                 .name(place.getName())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
