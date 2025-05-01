@@ -25,7 +25,7 @@ public class Post {
     @ManyToOne(fetch = LAZY)
     private User user;
 
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "item_id")
     @OneToOne(fetch = LAZY)
     private Item item;
 
