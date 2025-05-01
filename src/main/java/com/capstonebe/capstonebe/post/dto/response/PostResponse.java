@@ -13,13 +13,15 @@ public class PostResponse {
     private final long itemId;
     private final String title;
     private final String content;
+    private final String imagePath;
 
-    public static PostResponse from(Post post) {
+    public static PostResponse from(Post post, String url) {
         return new PostResponse(
                 post.getId(),
                 post.getItem().getId(),
                 post.getTitle(),
-                post.getContent()
+                post.getContent(),
+                url
         );
     }
 }

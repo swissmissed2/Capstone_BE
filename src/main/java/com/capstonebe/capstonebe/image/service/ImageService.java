@@ -130,4 +130,11 @@ public class ImageService {
     private String extractFileNameFromUrl(String fileUrl) {
         return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
     }
+
+    @Transactional(readOnly = true)
+    public String getImagePathByItemId(Long itemId) {
+        return imageRepository.findByItemId(itemId)
+                .map(Image::getPath)
+                .orElse(null);
+    }
 }

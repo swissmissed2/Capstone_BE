@@ -2,6 +2,7 @@ package com.capstonebe.capstonebe.post.service;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.keword.service.KeywordService;
@@ -26,6 +27,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final KeywordService keywordService;
+    private final ImageService imageService;
 
     @Transactional
     public PostResponse createPost(String email, CreatePostRequest createRequest) {
@@ -43,16 +45,20 @@ public class PostService {
 
         keywordService.sendKeywordMatchingNotify(post);
 
-        return PostResponse.from(post);
+        String url = imageService.getImagePathByItemId(item.getId());
+
+        return PostResponse.from(post, url);
     }
 
     @Transactional
     public PostResponse updatePost(Long id, UpdatePostRequest updateRequest) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+        String url = imageService.getImagePathByItemId(post.getItem().getId());
 
         if(updateRequest.getItemId() != null) {
             Item item = itemRepository.findById(updateRequest.getItemId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
             post.updateItem(item);
+            url = imageService.getImagePathByItemId(item.getId());
         }
 
         boolean isUpdated = false;
@@ -70,7 +76,7 @@ public class PostService {
         if (isUpdated)
             keywordService.sendKeywordMatchingNotify(post);
 
-        return PostResponse.from(post);
+        return PostResponse.from(post, url);
     }
 
     @Transactional
@@ -85,19 +91,26 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostResponse> getAllPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
-        return posts.map(PostResponse::from);
+        return posts.map(post -> {
+            String url = imageService.getImagePathByItemId(post.getItem().getId());
+            return PostResponse.from(post, url);
+        });
     }
 
     @Transactional
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
-        return PostResponse.from(post);
+        String url = imageService.getImagePathByItemId(post.getItem().getId());
+        return PostResponse.from(post, url);
     }
 
     @Transactional
     public Page<PostResponse> getPostsByUser(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
         Page<Post> posts = postRepository.findAllByUserId(user.getId(), pageable);
-        return posts.map(PostResponse::from);
+        return posts.map(post -> {
+            String url = imageService.getImagePathByItemId(post.getItem().getId());
+            return PostResponse.from(post, url);
+        });
     }
 }
