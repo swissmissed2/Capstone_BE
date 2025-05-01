@@ -15,7 +15,7 @@ public class ImageResponse {
     //private Long id;
     //private User userId;
 
-    @JsonProperty("image_url")
+    @JsonProperty("image_urls")
     private List<String> imageUrl;
 
     @JsonProperty("item_id")

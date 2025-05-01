@@ -85,4 +85,13 @@ public class Item extends BaseEntity {
         updateLocation(latitude, longitude);
         updateCategory(category);
     }
+
+    // DB에 insert가 끝난 직후 실행
+    @PostPersist
+    private void setTimeAfterPersist() {
+
+        if (this.type == ItemType.FOUND_ITEM && this.time == null)
+            this.time = getCreateAt().toLocalDate();
+    }
+
 }
