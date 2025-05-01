@@ -26,7 +26,7 @@ public class PlaceController {
     public ResponseEntity<?> registerPlace(@RequestBody @Valid PlaceRegisterRequest request,
                                            @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         return ResponseEntity.ok(placeService.registerPlace(request));
     }
@@ -36,7 +36,7 @@ public class PlaceController {
     public ResponseEntity<?> editPlace(@RequestBody @Valid PlaceEditRequest request,
                                        @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         return ResponseEntity.ok(placeService.editPlace(request));
     }
@@ -46,7 +46,7 @@ public class PlaceController {
     public ResponseEntity<?> deletePlace(@PathVariable Long id,
                                          @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         placeService.deletePlace(id);
 
