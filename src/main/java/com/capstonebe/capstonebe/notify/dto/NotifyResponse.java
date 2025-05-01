@@ -38,7 +38,7 @@ public class NotifyResponse {
                 .name(notify.getReceiver().getName())
                 .type(notify.getType() == NotifyType.MATCHING ? NotifyType.MATCHING.toString() : NotifyType.KEYWORD.toString())
                 .url(notify.getRelatedUrl())
-                .createdAt(notify.getCreateAt().toString())
+                .createdAt(notify.getCreatedAt().toString())
                 .build();
 
     }

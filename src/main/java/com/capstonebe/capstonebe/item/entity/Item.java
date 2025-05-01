@@ -91,7 +91,7 @@ public class Item extends BaseEntity {
     private void setTimeAfterPersist() {
 
         if (this.type == ItemType.FOUND_ITEM && this.time == null)
-            this.time = getCreateAt().toLocalDate();
+            this.time = getCreatedAt().toLocalDate();
     }
 
 }

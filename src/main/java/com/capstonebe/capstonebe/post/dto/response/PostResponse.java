@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,6 +16,8 @@ public class PostResponse {
     private final String title;
     private final String content;
     private final String imagePath;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public static PostResponse from(Post post, String url) {
         return new PostResponse(
@@ -21,7 +25,9 @@ public class PostResponse {
                 post.getItem().getId(),
                 post.getTitle(),
                 post.getContent(),
-                url
+                url,
+                post.getCreatedAt(),
+                post.getUpdatedAt()
         );
     }
 }

@@ -1,5 +1,6 @@
 package com.capstonebe.capstonebe.post.entity;
 
+import com.capstonebe.capstonebe.global.entity.BaseEntity;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.user.entity.User;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
