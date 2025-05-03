@@ -4,9 +4,13 @@ import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.category.repository.CategoryRepository;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.image.entity.Image;
+import com.capstonebe.capstonebe.image.repository.ImageRepository;
+import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
+import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemState;
@@ -38,6 +42,7 @@ public class ItemService {
     private final PlaceRepository placeRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
     @Transactional
     public ItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
@@ -168,9 +173,9 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemResponse> getItemsByFilter(ItemType type, String placeName, String categoryName,
-                                               String keyword, LocalDate startDate, LocalDate endDate,
-                                               Pageable pageable) {
+    public Page<ItemListResponse> getItemsByFilter(ItemType type, String placeName, String categoryName,
+                                                   String keyword, LocalDate startDate, LocalDate endDate,
+                                                   Pageable pageable) {
 
         if (keyword != null && keyword.trim().isEmpty()) {
             keyword = null;
@@ -179,10 +184,8 @@ public class ItemService {
         Page<Item> items = itemRepository.findItemsByFilter(placeName, categoryName, type, keyword, startDate, endDate, pageable);
 
         return items.map(item -> {
-            List<Place> places = item.getItemPlaces().stream()
-                    .map(ItemPlace::getPlace)
-                    .toList();
-            return ItemResponse.fromEntity(item, places);
+            String imageUrl = imageService.getFirstImagePathByItem(item);
+            return ItemListResponse.from(item, imageUrl);
         });
     }
 
