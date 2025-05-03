@@ -137,4 +137,11 @@ public class ImageService {
                 .map(Image::getPath)
                 .orElse(null);
     }
+
+    @Transactional(readOnly = true)
+    public String getFirstImagePathByItem(Item item) {
+        return imageRepository.findFirstByItemOrderByIdAsc(item)
+                .map(Image::getPath)
+                .orElse(null);
+    }
 }
