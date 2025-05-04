@@ -27,7 +27,7 @@ public class Post extends BaseEntity {
     private User user;
 
     @JoinColumn(name = "item_id")
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Item item;
 
     private String title;
