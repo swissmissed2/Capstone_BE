@@ -80,12 +80,12 @@ public class NotifyService {
             Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url));
 
             String receiverEmail = receiver.getEmail();
-            String eventId = receiverEmail + "_" + System.currentTimeMillis();
+            String eventId = receiverEmail + "_" + notify.getId() + "_" + System.currentTimeMillis();
             Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
             emitters.forEach(
-                    (key, emitter) -> {
-                        emitterRepository.saveEventCache(key, notify);
-                        sendNotification(emitter, eventId, key, NotifyResponse.fromEntity(notify));
+                    (emitterId, emitter) -> {
+                        emitterRepository.saveEventCache(eventId, notify);
+                        sendNotification(emitter, eventId, emitterId, NotifyResponse.fromEntity(notify));
                     }
             );
         } catch (Exception e) {
