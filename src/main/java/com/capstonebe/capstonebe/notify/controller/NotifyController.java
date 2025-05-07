@@ -4,18 +4,16 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.notify.service.NotifyService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@RequestMapping("/api/notifies")
+@RequestMapping("/api/notify")
 @AllArgsConstructor
 public class NotifyController {
 
@@ -32,6 +30,17 @@ public class NotifyController {
         }
 
         return notifyService.subscribe(user.getUsername(), lastEventId);
+    }
+
+    @GetMapping("/{type}")
+    public ResponseEntity<?> getNotificationsByType(@PathVariable String type,
+                                                    @AuthenticationPrincipal User user, Pageable pageable) {
+
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        return ResponseEntity.ok(notifyService.getNotificationsByType(type, user.getUsername(), pageable));
     }
 
 }

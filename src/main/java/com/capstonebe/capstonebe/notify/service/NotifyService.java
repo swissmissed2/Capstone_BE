@@ -1,13 +1,18 @@
 package com.capstonebe.capstonebe.notify.service;
 
+import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
+import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.notify.dto.NotifyResponse;
 import com.capstonebe.capstonebe.notify.entity.Notify;
 import com.capstonebe.capstonebe.notify.entity.NotifyType;
 import com.capstonebe.capstonebe.notify.repository.EmitterRepository;
 import com.capstonebe.capstonebe.notify.repository.NotifyRepository;
 import com.capstonebe.capstonebe.user.entity.User;
+import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -23,6 +28,7 @@ public class NotifyService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final EmitterRepository emitterRepository;
     private final NotifyRepository notifyRepository;
+    private final UserRepository userRepository;
 
     // SseEmitter는 클라이언트에게 이벤트를 전송하는 역할 수행
     // sse 구독 설정
@@ -91,6 +97,22 @@ public class NotifyService {
         } catch (Exception e) {
             log.error("알림 전송 실패: {}", e.getMessage());
         }
+    }
+
+    public Page<NotifyResponse> getNotificationsByType(String type, String email, Pageable pageable) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        NotifyType notifyType = switch (type) {
+            case "keyword" -> NotifyType.KEYWORD;
+            case "matching" -> NotifyType.MATCHING;
+            default -> throw new CustomException(CustomErrorCode.INVALID_NOTIFY_TYPE);
+        };
+
+        Page<Notify> notifications = notifyRepository.findByReceiverAndTypeAndIsReadFalse(user, notifyType, pageable);
+
+        return notifications.map(NotifyResponse::fromEntity);
     }
 
     private Notify createNotify(User receiver, NotifyType notifyType, String content, String url) {

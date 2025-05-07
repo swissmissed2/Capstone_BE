@@ -51,6 +51,10 @@ public enum CustomErrorCode {
     DUPLICATED_KEYWORD(HttpStatus.BAD_REQUEST, "이미 등록된 키워드입니다."),
     NOT_FOUND_KEYWORD(HttpStatus.NOT_FOUND, "해당 키워드를 찾을 수 없습니다."),
 
+    // notify
+    NOTIFY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 알림을 찾을 수 없습니다."),
+    INVALID_NOTIFY_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 알림 타입입니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
