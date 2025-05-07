@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -99,6 +100,7 @@ public class NotifyService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<NotifyResponse> getNotificationsByType(String type, String email, Pageable pageable) {
 
         User user = userRepository.findByEmail(email)
@@ -113,6 +115,18 @@ public class NotifyService {
         Page<Notify> notifications = notifyRepository.findByReceiverAndTypeAndIsReadFalse(user, notifyType, pageable);
 
         return notifications.map(NotifyResponse::fromEntity);
+    }
+
+    @Transactional
+    public void readNotify(String email, Long id) {
+
+        User receiver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Notify notify = notifyRepository.findByReceiverAndId(receiver, id)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOTIFY_NOT_FOUND));
+
+        notify.readNotify();
     }
 
     private Notify createNotify(User receiver, NotifyType notifyType, String content, String url) {

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface NotifyRepository extends JpaRepository<Notify, Long> {
 
@@ -16,4 +17,5 @@ public interface NotifyRepository extends JpaRepository<Notify, Long> {
 
     Page<Notify> findByReceiverAndTypeAndIsReadFalse(User receiver, NotifyType notifyType, Pageable pageable);
 
+    Optional<Notify> findByReceiverAndId(User receiver, Long id);
 }

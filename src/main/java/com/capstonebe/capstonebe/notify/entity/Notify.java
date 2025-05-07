@@ -41,4 +41,8 @@ public class Notify extends BaseEntity {
         this.isRead = isRead;
         this.receiver = receiver;
     }
+
+    public void readNotify() {
+        this.isRead = true;
+    }
 }
