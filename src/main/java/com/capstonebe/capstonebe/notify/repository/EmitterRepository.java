@@ -2,6 +2,7 @@ package com.capstonebe.capstonebe.notify.repository;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.List;
 import java.util.Map;
 
 public interface EmitterRepository {
@@ -13,5 +14,5 @@ public interface EmitterRepository {
     void deleteById(String id);
     void deleteAllEmitterStartWithId(String memberId);
     void deleteAllEventCacheStartWithId(String memberId);
-
+    void deleteAllEventCacheByEventId(List<Long> ids);
 }
