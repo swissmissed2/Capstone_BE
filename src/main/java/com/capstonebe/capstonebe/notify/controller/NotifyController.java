@@ -40,10 +40,22 @@ public class NotifyController {
         }
 
         notifyService.readNotify(user.getUsername(), id);
+
         return ResponseEntity.ok().build();
     }
 
     // todo : 알림 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteNotify(@PathVariable Long id, @AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        notifyService.deleteNotify(user.getUsername(), id);
+
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/{type}")
     public ResponseEntity<?> getNotificationsByType(@PathVariable String type,

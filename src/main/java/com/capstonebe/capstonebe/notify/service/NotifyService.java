@@ -129,6 +129,18 @@ public class NotifyService {
         notify.readNotify();
     }
 
+    @Transactional
+    public void deleteNotify(String email, Long id) {
+
+        User receiver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Notify notify = notifyRepository.findByReceiverAndId(receiver, id)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOTIFY_NOT_FOUND));
+
+        notifyRepository.delete(notify);
+    }
+
     private Notify createNotify(User receiver, NotifyType notifyType, String content, String url) {
         return Notify.builder()
                 .receiver(receiver)
