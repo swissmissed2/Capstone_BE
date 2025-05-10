@@ -73,7 +73,7 @@ public class ItemController {
 
     // 물건 단일 목록 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getItem(@PathVariable Long id) {
+    public ResponseEntity<?> getItemById(@PathVariable Long id) {
 
         return ResponseEntity.ok(itemService.getItemById(id));
     }
