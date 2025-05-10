@@ -71,7 +71,7 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
-    // 물건 단일 목록 조회
+    // 물건 단일 목록 조회 todo : 이미지 경로 반환 추가
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(@PathVariable Long id) {
 

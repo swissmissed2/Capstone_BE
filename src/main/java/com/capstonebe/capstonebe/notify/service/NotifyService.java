@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -137,6 +138,8 @@ public class NotifyService {
 
         Notify notify = notifyRepository.findByReceiverAndId(receiver, id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOTIFY_NOT_FOUND));
+
+        emitterRepository.deleteAllEventCacheByEventId(List.of(id));
 
         notifyRepository.delete(notify);
     }
