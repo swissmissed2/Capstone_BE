@@ -10,6 +10,7 @@ import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
+import com.capstonebe.capstonebe.item.dto.response.ItemDetailResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
@@ -146,7 +147,7 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemResponse getItemById(Long id) {
+    public ItemDetailResponse getItemById(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
@@ -154,7 +155,9 @@ public class ItemService {
                 .map(ItemPlace::getPlace)
                 .toList();
 
-        return ItemResponse.fromEntity(item, places);
+        String imageUrl = imageService.getFirstImagePathByItem(item);
+
+        return ItemDetailResponse.from(item, places, imageUrl);
     }
 
 
