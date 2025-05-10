@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateCommentRequest {
-    @NotBlank
+    @NotNull
     private Long postId;
 
     @NotBlank
