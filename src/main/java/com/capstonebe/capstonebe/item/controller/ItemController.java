@@ -98,14 +98,4 @@ public class ItemController {
 
     // todo : 물건 반환 처리
 
-
-
-    // 테스트용
-    @PostMapping("/test-bulk-register")
-    public ResponseEntity<String> registerTestItems(@AuthenticationPrincipal User user) {
-        itemService.registerFixedTestItems(user.getUsername());
-        return ResponseEntity.ok("테스트용 Item 5개 등록 완료");
-    }
-
-
 }
