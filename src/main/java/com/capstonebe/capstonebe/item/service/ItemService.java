@@ -8,6 +8,7 @@ import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
+import com.capstonebe.capstonebe.item.dto.response.AiMatchingResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemDetailResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
@@ -42,6 +43,8 @@ public class ItemService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
+    private final AiService aiService;
+    private final MatchingService matchingService;
 
     @Transactional
     public ItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
@@ -68,6 +71,9 @@ public class ItemService {
 
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
+
+        AiMatchingResponse response = aiService.requestMatchingFromAI(item);
+        matchingService.sendMatchingNotify(response);
 
         return ItemResponse.fromEntity(item, places);
     }
@@ -96,6 +102,9 @@ public class ItemService {
 
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
+
+        AiMatchingResponse response = aiService.requestMatchingFromAI(item);
+        matchingService.sendMatchingNotify(response);
 
         return ItemResponse.fromEntity(item, places);
     }

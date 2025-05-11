@@ -11,7 +11,7 @@ import com.capstonebe.capstonebe.image.dto.request.ImageRegisterRequest;
 import com.capstonebe.capstonebe.image.dto.response.ImageResponse;
 import com.capstonebe.capstonebe.image.entity.Image;
 import com.capstonebe.capstonebe.image.repository.ImageRepository;
-import com.capstonebe.capstonebe.item.dto.request.AiDescriptionResponse;
+import com.capstonebe.capstonebe.item.dto.response.AiDescriptionResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.item.service.AiService;

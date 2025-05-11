@@ -1,4 +1,4 @@
-package com.capstonebe.capstonebe.item.dto.request;
+package com.capstonebe.capstonebe.item.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
