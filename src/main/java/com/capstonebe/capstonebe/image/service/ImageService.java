@@ -7,13 +7,14 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
-import com.capstonebe.capstonebe.image.dto.request.ImageEditRequest;
 import com.capstonebe.capstonebe.image.dto.request.ImageRegisterRequest;
 import com.capstonebe.capstonebe.image.dto.response.ImageResponse;
 import com.capstonebe.capstonebe.image.entity.Image;
 import com.capstonebe.capstonebe.image.repository.ImageRepository;
+import com.capstonebe.capstonebe.item.dto.request.AiDescriptionResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
+import com.capstonebe.capstonebe.item.service.AiService;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +39,20 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final AiService aiService;
 
-    public List<String> uploadImages(List<MultipartFile> multipartFiles) {
+    /**
+     * 이미지 업로드하고 ai서버로 이미지 경로 전송하여 이미지에 대한 설명 받기
+     * @param multipartFiles
+     * @return
+     */
+    public AiDescriptionResponse uploadImages(List<MultipartFile> multipartFiles) {
 
-            return multipartFiles.stream()
+            List<String> imageUuls =  multipartFiles.stream()
                     .map(this::uploadToS3)
                     .toList();
+
+            return aiService.requestDescriptionFromAI(imageUuls);
     }
 
     public String uploadToS3(MultipartFile multipartFile) {

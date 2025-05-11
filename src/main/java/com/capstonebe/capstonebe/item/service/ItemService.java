@@ -4,8 +4,6 @@ import com.capstonebe.capstonebe.category.entity.Category;
 import com.capstonebe.capstonebe.category.repository.CategoryRepository;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
-import com.capstonebe.capstonebe.image.entity.Image;
-import com.capstonebe.capstonebe.image.repository.ImageRepository;
 import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
@@ -236,6 +234,18 @@ public class ItemService {
         for (LostItemRegisterRequest request : testItems) {
             resisterLostItem(request, email); // 기존 등록 메서드 재사용!
         }
+
+        List<FoundItemRegisterRequest> testItems2 = List.of(
+                createRequest2("검정색 지갑", 37.5665, 126.9780, "지하철역 근처에서 분실한 검정 지갑", 1L, List.of(1L, 2L)),
+                createRequest2("아이폰 13", 37.5700, 126.9825, "카페에서 두고 온 아이폰", 2L, List.of(2L)),
+                createRequest2("회색 후드티", 37.5641, 126.9750, "버스에서 분실한 옷", 3L, List.of(3L)),
+                createRequest2("서류 가방", 37.5610, 126.9832, "사무실 근처에서 잃어버림", 4L, List.of(1L)),
+                createRequest2("무선 이어폰", 37.5599, 126.9700, "공원 벤치에서 분실한 이어폰", 5L, List.of(1L, 3L))
+        );
+
+        for (FoundItemRegisterRequest request : testItems2) {
+            registerFoundItem(request); // 기존 등록 메서드 재사용!
+        }
     }
 
     private LostItemRegisterRequest createRequest(String name, Double lat, Double lon, String desc, Long categoryId, List<Long> placeIds) {
@@ -245,6 +255,18 @@ public class ItemService {
         request.setLatitude(lat);
         request.setLongitude(lon);
         request.setTime(LocalDate.now().minusDays(new Random().nextInt(7))); // 최근 일주일 랜덤
+        request.setDescription(desc);
+        request.setCategoryId(categoryId);
+        request.setPlaceIds(placeIds);
+        return request;
+    }
+
+    private FoundItemRegisterRequest createRequest2(String name, Double lat, Double lon, String desc, Long categoryId, List<Long> placeIds) {
+
+        FoundItemRegisterRequest request = new FoundItemRegisterRequest();
+        request.setName(name);
+        request.setLatitude(lat);
+        request.setLongitude(lon);
         request.setDescription(desc);
         request.setCategoryId(categoryId);
         request.setPlaceIds(placeIds);

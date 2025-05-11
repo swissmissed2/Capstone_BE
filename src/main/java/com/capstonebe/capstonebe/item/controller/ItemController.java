@@ -88,7 +88,11 @@ public class ItemController {
                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                               Pageable pageable) {
 
-        //System.out.println(place + " " + category + " " + keyword + " " + startDate + " " + endDate);
+        System.out.println("place = " + place);
+        System.out.println("category = " + category);
+        System.out.println("keyword = " + keyword);
+        System.out.println("startDate = " + startDate);
+        System.out.println("endDate = " + endDate);
         return ResponseEntity.ok(itemService.getItemsByFilter(type, place, category, keyword, startDate, endDate, pageable));
     }
 
