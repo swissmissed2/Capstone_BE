@@ -1,6 +1,7 @@
 package com.capstonebe.capstonebe.item.repository;
 
 import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -55,6 +57,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             Pageable pageable
     );
 
-
     Page<Item> findByUser(User user, Pageable pageable);
+
+    List<Item> findByCreatedAtBeforeAndState(LocalDateTime createdAt, ItemState state);
+
+
 }

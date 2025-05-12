@@ -19,8 +19,13 @@ public class NotifyController {
 
     private final NotifyService notifyService;
 
-    // 서버에서 클라이언트로의 단방향 통신만 필요하므로 SSE 사용
-    // sse 이벤트 스트림 구독
+    /**
+     * 서버에서 클라이언트로의 단방향 통신만 필요하므로 SSE 사용
+     * sse 이벤트 스트림 구독
+     * @param user
+     * @param lastEventId
+     * @return
+     */
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal User user,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
@@ -32,6 +37,12 @@ public class NotifyController {
         return notifyService.subscribe(user.getUsername(), lastEventId);
     }
 
+    /**
+     * 알림 읽음 처리
+     * @param id
+     * @param user
+     * @return
+     */
     @PatchMapping("/{id}/read")
     public ResponseEntity<?> read(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
@@ -44,7 +55,12 @@ public class NotifyController {
         return ResponseEntity.ok().build();
     }
 
-    // todo : 알림 삭제
+    /**
+     * 알림 삭제
+     * @param id
+     * @param user
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNotify(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
@@ -57,6 +73,13 @@ public class NotifyController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 알림 타입별 조회
+     * @param type
+     * @param user
+     * @param pageable
+     * @return
+     */
     @GetMapping("/{type}")
     public ResponseEntity<?> getNotificationsByType(@PathVariable String type,
                                                     @AuthenticationPrincipal User user, Pageable pageable) {
