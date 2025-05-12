@@ -40,3 +40,5 @@ out/
 application-private.properties
 
 sse-test.html
+
+TestController.java

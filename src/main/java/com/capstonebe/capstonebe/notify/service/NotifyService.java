@@ -82,14 +82,17 @@ public class NotifyService {
 
     // 지정된 수신자에게 알림 전송(비동기)
     @Async
-    public void send(User receiver, NotifyType notifyType, String content, String url) {
+    public void send(String email, NotifyType notifyType, String content, String url) {
 
         try {
+            User receiver = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
             Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url));
 
-            String receiverEmail = receiver.getEmail();
-            String eventId = receiverEmail + "_" + notify.getId() + "_" + System.currentTimeMillis();
-            Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
+            //String receiverEmail = receiver.getEmail();
+            String eventId = email + "_" + notify.getId() + "_" + System.currentTimeMillis();
+            Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(email);
             emitters.forEach(
                     (emitterId, emitter) -> {
                         emitterRepository.saveEventCache(eventId, notify);
