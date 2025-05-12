@@ -90,7 +90,7 @@ public class KeywordService {
                     String notifyContent = "‘" + keyword.getKeyword() + "’(이)가 포함된 게시글이 등록되었습니다.";
                     String url = "/api/v1/posts/" + post.getId();
 
-                    notifyService.send(user, NotifyType.KEYWORD, notifyContent, url);
+                    notifyService.send(user.getEmail(), NotifyType.KEYWORD, notifyContent, url);
                 });
     }
 

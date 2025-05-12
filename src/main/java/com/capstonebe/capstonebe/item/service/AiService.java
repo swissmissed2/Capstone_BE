@@ -1,12 +1,9 @@
 package com.capstonebe.capstonebe.item.service;
 
-import com.capstonebe.capstonebe.image.entity.Image;
-import com.capstonebe.capstonebe.image.repository.ImageRepository;
 import com.capstonebe.capstonebe.item.dto.request.AiDescriptionRequest;
 import com.capstonebe.capstonebe.item.dto.request.AiMatchingRequest;
 import com.capstonebe.capstonebe.item.dto.response.AiDescriptionResponse;
 import com.capstonebe.capstonebe.item.dto.response.AiMatchingResponse;
-import com.capstonebe.capstonebe.item.entity.Item;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +19,6 @@ import java.util.List;
 public class AiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final ImageRepository imageRepository;
 
     public AiDescriptionResponse requestDescriptionFromAI(List<String> imageUrls) {
 
@@ -44,26 +40,14 @@ public class AiService {
         return response.getBody();
     }
 
-    public AiMatchingResponse requestMatchingFromAI(Item item) {
+    public AiMatchingResponse requestMatchingFromAI(AiMatchingRequest request) {
 
         String aiUrl = "http://localhost:8080/api/v1/match-items";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        List<String> imageUrls = imageRepository.findAllByItem(item)
-                .stream()
-                .map(Image::getPath)
-                .toList();
-
-        AiMatchingRequest body = AiMatchingRequest.builder()
-                .itemId(item.getId())
-                .imageUrls(imageUrls)
-                .category(item.getCategory().getName())
-                .type(item.getType().getName())
-                .build();
-
-        HttpEntity<?> entity = new HttpEntity<>(body, headers);
+        HttpEntity<?> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<AiMatchingResponse> response = restTemplate.postForEntity(
                 aiUrl, entity, AiMatchingResponse.class

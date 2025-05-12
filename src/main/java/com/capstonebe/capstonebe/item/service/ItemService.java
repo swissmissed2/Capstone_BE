@@ -8,13 +8,13 @@ import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
-import com.capstonebe.capstonebe.item.dto.response.AiMatchingResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemDetailResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.dto.response.ItemResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.entity.ItemType;
+import com.capstonebe.capstonebe.item.event.ItemRegisteredEvent;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.itemplace.entity.ItemPlace;
 import com.capstonebe.capstonebe.itemplace.repository.ItemPlaceRepository;
@@ -23,14 +23,16 @@ import com.capstonebe.capstonebe.place.repository.PlaceRepository;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,8 +45,7 @@ public class ItemService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
-    private final AiService aiService;
-    private final MatchingService matchingService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
@@ -72,8 +73,13 @@ public class ItemService {
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
 
-        AiMatchingResponse response = aiService.requestMatchingFromAI(item);
-        matchingService.sendMatchingNotify(response);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eventPublisher.publishEvent(new ItemRegisteredEvent(item.getId(),
+                        category.getName(), ItemType.LOST_ITEM.getName()));
+            }
+        });
 
         return ItemResponse.fromEntity(item, places);
     }
@@ -103,8 +109,13 @@ public class ItemService {
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
 
-        AiMatchingResponse response = aiService.requestMatchingFromAI(item);
-        matchingService.sendMatchingNotify(response);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eventPublisher.publishEvent(new ItemRegisteredEvent(item.getId(),
+                        category.getName(), ItemType.LOST_ITEM.getName()));
+            }
+        });
 
         return ItemResponse.fromEntity(item, places);
     }
