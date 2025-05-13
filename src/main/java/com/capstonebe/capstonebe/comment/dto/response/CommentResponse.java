@@ -11,12 +11,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class CommentResponse {
+    private final Long id;
     private final Long userId;
     private final String content;
     private final LocalDateTime createdAt;
 
     public static CommentResponse from(Comment comment) {
         return new CommentResponse(
+                comment.getId(),
                 comment.getUser().getId(),
                 comment.getContent(),
                 comment.getCreatedAt()
