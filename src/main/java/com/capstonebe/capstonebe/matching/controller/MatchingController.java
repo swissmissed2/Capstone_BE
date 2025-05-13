@@ -1,8 +1,15 @@
 package com.capstonebe.capstonebe.matching.controller;
 
+import com.capstonebe.capstonebe.matching.dto.request.CreateMatchingRequest;
+import com.capstonebe.capstonebe.matching.dto.response.MatchingResponse;
 import com.capstonebe.capstonebe.matching.service.MatchingService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/matching")
@@ -19,5 +26,9 @@ public class MatchingController {
 //        return ResponseEntity.ok().build();
 //    }
 
-
+    @PostMapping
+    public ResponseEntity<List<MatchingResponse>> createMatching(@RequestBody @Valid CreateMatchingRequest createRequest) {
+        List<MatchingResponse> responses = matchingService.createMatching(createRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responses);
+    }
 }

@@ -48,7 +48,7 @@ public class MatchingService {
 
                 matchings.add(matching);
             }
-        } else {
+        } else if(item.getType() == ItemType.FOUND_ITEM){
             for (Item matchedItem : matchedItems) {
                 Matching matching = Matching.builder()
                         .lostItem(matchedItem)

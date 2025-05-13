@@ -13,7 +13,6 @@ import java.util.List;
 public class CreateMatchingRequest {
     @NotNull
     private Long itemId;
-
-    @NotNull
+    
     private List<Long> matchedItemIds;
 }
