@@ -1,5 +1,6 @@
 package com.capstonebe.capstonebe.inquiry.controller;
 
+import com.capstonebe.capstonebe.global.entity.BaseEntity;
 import com.capstonebe.capstonebe.inquiry.dto.request.CreateInquiryRequest;
 import com.capstonebe.capstonebe.inquiry.dto.request.UpdateAnswerRequest;
 import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/inquiries")
 @RequiredArgsConstructor
-public class InquiryController {
+public class InquiryController extends BaseEntity {
 
     private final InquiryService inquiryService;
 

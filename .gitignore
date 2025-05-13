@@ -40,3 +40,7 @@ out/
 application-private.properties
 
 sse-test.html
+
+# QueryDSL
+build/generated/
+generated/

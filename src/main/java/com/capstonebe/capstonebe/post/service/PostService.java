@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -108,6 +110,15 @@ public class PostService {
     public Page<PostResponse> getPostsByUser(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
         Page<Post> posts = postRepository.findAllByUserId(user.getId(), pageable);
+        return posts.map(post -> {
+            String url = imageService.getImagePathByItemId(post.getItem().getId());
+            return PostResponse.from(post, url);
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponse> searchPosts(Long categoryId, Long placeId, String keyword, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Page<Post> posts = postRepository.searchPosts(categoryId, placeId, keyword, startDate, endDate, pageable);
         return posts.map(post -> {
             String url = imageService.getImagePathByItemId(post.getItem().getId());
             return PostResponse.from(post, url);

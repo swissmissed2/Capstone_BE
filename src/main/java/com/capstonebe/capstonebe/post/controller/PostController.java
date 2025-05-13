@@ -10,11 +10,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -57,6 +60,20 @@ public class PostController {
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
         PostResponse response = postService.getPostById(id);
         return ResponseEntity.ok(response);
+    }
+
+    // 포스트 검색
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostResponse>> searchPosts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long placeId,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Pageable pageable
+    ) {
+        Page<PostResponse> results = postService.searchPosts(categoryId, placeId, keyword, startDate, endDate, pageable);
+        return ResponseEntity.ok(results);
     }
 
     // 포스트 별 댓글 조회
