@@ -1,4 +1,4 @@
-package com.capstonebe.capstonebe.item.dto.response;
+package com.capstonebe.capstonebe.matching.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;

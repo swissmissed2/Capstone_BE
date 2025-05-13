@@ -1,9 +1,9 @@
 package com.capstonebe.capstonebe.item.service;
 
 import com.capstonebe.capstonebe.item.dto.request.AiDescriptionRequest;
-import com.capstonebe.capstonebe.item.dto.request.AiMatchingRequest;
+import com.capstonebe.capstonebe.matching.dto.request.AiMatchingRequest;
 import com.capstonebe.capstonebe.item.dto.response.AiDescriptionResponse;
-import com.capstonebe.capstonebe.item.dto.response.AiMatchingResponse;
+import com.capstonebe.capstonebe.matching.dto.response.AiMatchingResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

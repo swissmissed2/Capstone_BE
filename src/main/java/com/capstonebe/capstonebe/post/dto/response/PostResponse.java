@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class PostResponse {
-    private final long id;
-    private final long itemId;
+    private final Long id;
+    private final Long itemId;
     private final String title;
     private final String content;
     private final String imagePath;

@@ -1,4 +1,4 @@
-package com.capstonebe.capstonebe.item.dto.request;
+package com.capstonebe.capstonebe.matching.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

@@ -1,10 +1,7 @@
-package com.capstonebe.capstonebe.item.controller;
+package com.capstonebe.capstonebe.matching.controller;
 
-import com.capstonebe.capstonebe.item.dto.response.AiMatchingResponse;
-import com.capstonebe.capstonebe.item.service.MatchingService;
-import jakarta.validation.Valid;
+import com.capstonebe.capstonebe.matching.service.MatchingService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
