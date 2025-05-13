@@ -41,6 +41,8 @@ application-private.properties
 
 sse-test.html
 
+TestController.java
+
 # QueryDSL
 build/generated/
 generated/

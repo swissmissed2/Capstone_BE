@@ -70,13 +70,4 @@ public class CategoryController {
         }
     }
 
-
-
-    // 테스트용
-    @PostMapping("/test-bulk-register")
-    public ResponseEntity<String> registerTestCategories() {
-        categoryService.registerTestCategories();
-        return ResponseEntity.ok("테스트용 카테고리 5개 등록 완료");
-    }
-
 }
