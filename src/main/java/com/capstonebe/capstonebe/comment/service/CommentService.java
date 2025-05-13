@@ -32,7 +32,7 @@ public class CommentService {
         Comment comment = Comment.builder()
                 .user(user)
                 .post(post)
-                .content(post.getContent())
+                .content(createRequest.getContent())
                 .build();
 
         commentRepository.save(comment);
