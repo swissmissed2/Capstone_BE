@@ -53,9 +53,14 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse updatePost(Long id, UpdatePostRequest updateRequest) {
+    public PostResponse updatePost(String email, Long id, UpdatePostRequest updateRequest) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
         String url = imageService.getImagePathByItemId(post.getItem().getId());
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new CustomException(CustomErrorCode.NO_PERMISSION);
+        }
 
         if(updateRequest.getItemId() != null) {
             Item item = itemRepository.findById(updateRequest.getItemId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
@@ -75,16 +80,20 @@ public class PostService {
             isUpdated = true;
         }
 
-        if (isUpdated)
+        if (isUpdated) {
             keywordService.sendKeywordMatchingNotify(post);
+        }
 
         return PostResponse.from(post, url);
     }
 
     @Transactional
-    public void deletePost(Long id) {
-        if (!postRepository.existsById(id)) {
-            throw new CustomException(CustomErrorCode.POST_NOT_FOUND);
+    public void deletePost(String email, Long id) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.POST_NOT_FOUND));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new CustomException(CustomErrorCode.NO_PERMISSION);
         }
 
         postRepository.deleteById(id);

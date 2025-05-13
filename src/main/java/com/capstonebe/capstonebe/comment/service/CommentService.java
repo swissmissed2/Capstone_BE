@@ -40,9 +40,12 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long id) {
-        if(!commentRepository.existsById(id)) {
-            throw new CustomException(CustomErrorCode.COMMENT_NOT_FOUND);
+    public void deleteComment(String email, Long id) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(CustomErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new CustomException(CustomErrorCode.NO_PERMISSION);
         }
 
         commentRepository.deleteById(id);

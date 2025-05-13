@@ -2,6 +2,8 @@ package com.capstonebe.capstonebe.post.controller;
 
 import com.capstonebe.capstonebe.comment.dto.response.CommentResponse;
 import com.capstonebe.capstonebe.comment.service.CommentService;
+import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
+import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.post.dto.request.CreatePostRequest;
 import com.capstonebe.capstonebe.post.dto.request.UpdatePostRequest;
 import com.capstonebe.capstonebe.post.dto.response.PostResponse;
@@ -30,21 +32,33 @@ public class PostController {
     // 포스트 작성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid CreatePostRequest createRequest) {
+        if (userDetails == null) {
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED);
+        }
+
         PostResponse response = postService.createPost(userDetails.getUsername(), createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 포스트 수정
     @PatchMapping("/update/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequest updateRequest) {
-        PostResponse response = postService.updatePost(id, updateRequest);
+    public ResponseEntity<PostResponse> updatePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, @RequestBody UpdatePostRequest updateRequest) {
+        if (userDetails == null) {
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED);
+        }
+
+        PostResponse response = postService.updatePost(userDetails.getUsername(), id, updateRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 포스트 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        if (userDetails == null) {
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED);
+        }
+
+        postService.deletePost(userDetails.getUsername(), id);
         return ResponseEntity.noContent().build();
     }
 
