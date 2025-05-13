@@ -7,14 +7,20 @@ import lombok.Getter;
 @Getter
 public class CategoryResponse {
 
+    Long id;
+
     String name;
 
     @Builder
-    public CategoryResponse(String name) {
+    public CategoryResponse(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
     public static CategoryResponse fromEntity(Category category) {
-        return CategoryResponse.builder().name(category.getName()).build();
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
     }
 }

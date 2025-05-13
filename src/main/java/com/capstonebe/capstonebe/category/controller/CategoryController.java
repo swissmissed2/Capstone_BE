@@ -29,7 +29,7 @@ public class CategoryController {
     public ResponseEntity<?> registerCategory(@RequestBody @Valid CategoryRegisterRequest request,
                                               @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         return ResponseEntity.ok(categoryService.registerCategory(request));
     }
@@ -39,7 +39,7 @@ public class CategoryController {
     public ResponseEntity<?> editCategory(@RequestBody @Valid CategoryEditRequest request,
                                           @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         return ResponseEntity.ok(categoryService.editCategory(request));
     }
@@ -49,7 +49,7 @@ public class CategoryController {
     public ResponseEntity<?> deleteCategory(@PathVariable Long id,
                                             @CookieValue(value = "jwt", required = false) String token) {
 
-        validateAdmin(token);
+        //validateAdmin(token);
 
         categoryService.deleteCategory(id);
 

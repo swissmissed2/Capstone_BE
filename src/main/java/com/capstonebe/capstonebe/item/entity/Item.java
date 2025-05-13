@@ -86,6 +86,10 @@ public class Item extends BaseEntity {
         updateCategory(category);
     }
 
+    public void setExpired() {
+        this.state = ItemState.EXPIRED;
+    }
+
     // DB에 insert가 끝난 직후 실행
     @PostPersist
     private void setTimeAfterPersist() {
