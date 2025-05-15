@@ -6,8 +6,15 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.item.repository.ItemRepository;
+import com.capstonebe.capstonebe.qr.dto.request.IssueQrRequest;
+import com.capstonebe.capstonebe.qr.dto.request.SearchQrRequest;
+import com.capstonebe.capstonebe.qr.dto.response.SearchQrResponse;
 import com.capstonebe.capstonebe.qr.entity.Qr;
 import com.capstonebe.capstonebe.qr.repository.QrRepository;
+import com.capstonebe.capstonebe.user.entity.User;
+import com.capstonebe.capstonebe.user.repository.UserRepository;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -39,13 +46,21 @@ public class QrService {
 
     private final AmazonS3 amazonS3;
     private final QrRepository qrRepository;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Transactional
-    public byte[] issueQr(Long lockerId, Long userId) throws Exception {
+    public byte[] issueQr(IssueQrRequest request, String email) throws Exception {
 
-        String token = generateSha256Token(userId, lockerId);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        String qrUrl = "http://localhost:8081/verify?token=" + token;
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+
+        String token = generateSha256Token(user.getId(), request.getLockerId());
+
+        String qrUrl = "http://localhost:8081/api/qr/verify?token=" + token;
         byte[] qrImage = generateQrCode(qrUrl, 250, 250);
 
         String imageUrl = uploadQrImage(token, qrImage);
@@ -53,8 +68,9 @@ public class QrService {
         LocalDateTime now = LocalDateTime.now();
         Qr qr = Qr.builder()
                 .id(token)
-                .userId(userId)
-                .lockerId(lockerId)
+                .user(user)
+                .item(item)
+                .lockerId(request.getLockerId())
                 .used(false)
                 .qrImageUrl(imageUrl)
                 .expiresAt(now.plusDays(1))
@@ -65,12 +81,12 @@ public class QrService {
         return qrImage;
     }
 
-    public Boolean veryfyQr(String token) {
+    public Boolean verifyQr(String token) {
 
         Qr qr = qrRepository.findById(token)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.QR_NOT_FOUND));
 
-        if (qr.isUsed()) {
+        if (qr.getUsed()) {
             throw new CustomException(CustomErrorCode.QR_ALREADY_USED);
         }
 
@@ -78,11 +94,25 @@ public class QrService {
             throw new CustomException(CustomErrorCode.QR_EXPIRED);
         }
 
-        qr.setUsed(true);
+        qr.setUsed(Boolean.TRUE);
 
         qrRepository.save(qr);
 
         return Boolean.TRUE;
+    }
+
+    public SearchQrResponse getQrByItem(SearchQrRequest request, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+
+        Qr qr = qrRepository.findByUserAndItem(user, item)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.QR_NOT_FOUND));
+
+        return SearchQrResponse.from(qr);
     }
 
     private byte[] generateQrCode(String content, int width, int height) throws WriterException, IOException {
