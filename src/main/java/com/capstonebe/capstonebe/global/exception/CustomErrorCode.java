@@ -57,6 +57,12 @@ public enum CustomErrorCode {
     NOTIFY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 알림을 찾을 수 없습니다."),
     INVALID_NOTIFY_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 알림 타입입니다."),
 
+    // qr
+    QR_ISSUE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "QR 코드 발급 중 오류가 발생했습니다."),
+    QR_NOT_FOUND(HttpStatus.NOT_FOUND, "QR 코드가 존재하지 않습니다."),
+    QR_ALREADY_USED(HttpStatus.BAD_REQUEST, "이미 사용된 QR 코드입니다."),
+    QR_EXPIRED(HttpStatus.BAD_REQUEST, "만료된 QR 코드입니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
