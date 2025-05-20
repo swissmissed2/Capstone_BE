@@ -2,6 +2,7 @@ package com.capstonebe.capstonebe.inquiry.dto.request;
 
 import com.capstonebe.capstonebe.inquiry.entity.QuestionType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,6 @@ public class CreateFAQRequest {
     @NotBlank
     private String answer;
 
-    @NotBlank
+    @NotNull
     private QuestionType questionType;
 }

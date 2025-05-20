@@ -36,7 +36,7 @@ public class FAQController {
 
     // FAQ 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFAQ(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteFAQ(@PathVariable("id") Long id) {
         faqService.deleteFAQ(id);
         return ResponseEntity.noContent().build();
     }
