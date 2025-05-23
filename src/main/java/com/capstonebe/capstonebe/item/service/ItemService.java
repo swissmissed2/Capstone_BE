@@ -60,8 +60,6 @@ public class ItemService {
                 .user(user)
                 .type(ItemType.LOST_ITEM)
                 .name(request.getName())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .time(request.getTime())
                 .description(request.getDescription())
                 .itemState(ItemState.NOT_RETURNED)
