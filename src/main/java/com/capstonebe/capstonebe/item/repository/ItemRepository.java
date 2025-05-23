@@ -61,5 +61,16 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByCreatedAtBeforeAndState(LocalDateTime createdAt, ItemState state);
 
+    @Query("""
+    SELECT i FROM Item i
+    WHERE i.user.id = :userId AND i.id IN (
+        SELECT m.lostItem.id
+        FROM Matching m
+        WHERE m.foundItem.id = :itemId
+    )
+""")
+    Page<Item> findLostItemsMatchedToFoundItem(@Param("userId") Long userId,
+                                               @Param("itemId") Long foundItemId,
+                                               Pageable pageable);
 
 }
