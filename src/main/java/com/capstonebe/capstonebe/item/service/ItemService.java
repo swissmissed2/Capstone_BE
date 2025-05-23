@@ -225,6 +225,16 @@ public class ItemService {
         });
     }
 
+    public Page<ItemListResponse> getExpiredItems(Pageable pageable) {
+
+        Page<Item> expiredItems = itemRepository.findByState(ItemState.EXPIRED, pageable);
+
+        return expiredItems.map(item -> {
+            String imageUrl = imageService.getFirstImagePathByItem(item);
+            return ItemListResponse.from(item, imageUrl);
+        });
+    }
+
     private void saveItemPlaces(Item item, List<Place> places) {
         for (Place place : places) {
             ItemPlace itemPlace = ItemPlace.builder()

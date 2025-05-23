@@ -61,5 +61,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByCreatedAtBeforeAndState(LocalDateTime createdAt, ItemState state);
 
+    Page<Item> findByState(ItemState state, Pageable pageable);
 
 }
