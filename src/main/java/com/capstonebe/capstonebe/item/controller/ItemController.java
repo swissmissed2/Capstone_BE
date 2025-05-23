@@ -28,6 +28,7 @@ public class ItemController {
     }
 
     // 분실물 등록
+    // todo : 좌표 삭제
     @PostMapping("/lost/register")
     public ResponseEntity<?> resisterLostItem(@RequestBody @Valid LostItemRegisterRequest request,
                                               @AuthenticationPrincipal User user) {
