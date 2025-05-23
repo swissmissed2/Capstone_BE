@@ -2,6 +2,8 @@ package com.capstonebe.capstonebe.matching.service;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.image.service.ImageService;
+import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
@@ -13,8 +15,11 @@ import com.capstonebe.capstonebe.matching.entity.MatchingState;
 import com.capstonebe.capstonebe.matching.repository.MatchingRepository;
 import com.capstonebe.capstonebe.notify.entity.NotifyType;
 import com.capstonebe.capstonebe.notify.service.NotifyService;
+import com.capstonebe.capstonebe.user.entity.User;
+import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +33,8 @@ public class MatchingService {
 
     private final MatchingRepository matchingRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ImageService imageService;
     private final NotifyService notifyService;
 
     @Transactional
@@ -64,6 +71,15 @@ public class MatchingService {
         return matchings.stream()
                 .map(MatchingResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Page<ItemListResponse> getMatchedItemsByUser(String email, Long id, Pageable pageable) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Page<Item> items = itemRepository.findLostItemsMatchedToFoundItem(user.getId(), id, pageable);
+        return items.map(item -> {
+            String url = imageService.getImagePathByItemId(item.getId());
+            return ItemListResponse.from(item, url);
+        });
     }
 
     public void sendMatchingNotify(AiMatchingResponse response, List<String> emails) {
