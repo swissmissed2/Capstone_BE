@@ -13,6 +13,7 @@ import com.capstonebe.capstonebe.qr.dto.request.SearchQrRequest;
 import com.capstonebe.capstonebe.qr.dto.response.SearchQrResponse;
 import com.capstonebe.capstonebe.qr.entity.Qr;
 import com.capstonebe.capstonebe.qr.repository.QrRepository;
+import com.capstonebe.capstonebe.returnrecord.service.ReturnRecordService;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import com.google.zxing.BarcodeFormat;
@@ -48,6 +49,7 @@ public class QrService {
     private final QrRepository qrRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final ReturnRecordService returnRecordService;
 
     @Transactional
     public byte[] issueQr(IssueQrRequest request, String email) throws Exception {
@@ -97,6 +99,8 @@ public class QrService {
         qr.setUsed(Boolean.TRUE);
 
         qrRepository.save(qr);
+
+        returnRecordService.registerReturnRecord(qr.getItem(), qr.getUser(), LocalDateTime.now());
 
         return Boolean.TRUE;
     }
