@@ -17,13 +17,14 @@ public class ItemExpirationScheduler {
 
     private final ItemRepository itemRepository;
 
+    // todo : 2주 뒤 만료로 수정
     @Transactional
     @Scheduled(cron = "0 0 3 * * ?") // 매일 새벽 3시 실행
     public void expireOldItems() {
 
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
 
-        List<Item> expiredItems = itemRepository.findByCreatedAtBeforeAndState(oneMonthAgo, ItemState.NOT_RETURNED);
+        List<Item> expiredItems = itemRepository.findByCreatedAtBeforeAndState(twoWeeksAgo, ItemState.NOT_RETURNED);
 
         for (Item item : expiredItems) {
             item.setExpired();

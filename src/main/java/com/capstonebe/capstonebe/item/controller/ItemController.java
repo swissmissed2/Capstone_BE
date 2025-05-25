@@ -7,7 +7,10 @@ import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.service.ItemService;
+import com.capstonebe.capstonebe.security.JwtUtil;
+import com.capstonebe.capstonebe.user.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +22,12 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/items")
+@AllArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
-
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     // 분실물 등록
     @PostMapping("/lost/register")
@@ -94,6 +96,28 @@ public class ItemController {
         System.out.println("startDate = " + startDate);
         System.out.println("endDate = " + endDate);
         return ResponseEntity.ok(itemService.getItemsByFilter(type, place, category, keyword, startDate, endDate, pageable));
+    }
+
+    /**
+     * 만료된 물건 목록 조회
+     * @param pageable
+     * @param token
+     * @return
+     */
+    @GetMapping("/admin/expired")
+    public ResponseEntity<?> getExpiredItems(Pageable pageable,
+            @CookieValue(value = "jwt", required = false) String token) {
+
+        validateAdmin(token);
+
+        return ResponseEntity.ok(itemService.getExpiredItems(pageable));
+    }
+
+    private void validateAdmin(String token) {
+
+        if (token == null || !userService.isAdmin(jwtUtil.extractEmail(token))) {
+            throw new CustomException(CustomErrorCode.IS_NOT_ADMIN);
+        }
     }
 
     // todo : 물건 반환 처리

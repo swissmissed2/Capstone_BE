@@ -47,6 +47,8 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPlace> itemPlaces = new ArrayList<>();
 
+    private String identifier;
+
     public Item() {}
 
     @Builder

@@ -21,6 +21,7 @@ public class PlaceController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+    // todo : 관리자 인증
     // 장소 등록
     @PostMapping("/register")
     public ResponseEntity<?> registerPlace(@RequestBody @Valid PlaceRegisterRequest request,

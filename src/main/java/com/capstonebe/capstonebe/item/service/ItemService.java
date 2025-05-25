@@ -60,8 +60,6 @@ public class ItemService {
                 .user(user)
                 .type(ItemType.LOST_ITEM)
                 .name(request.getName())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .time(request.getTime())
                 .description(request.getDescription())
                 .itemState(ItemState.NOT_RETURNED)
@@ -224,6 +222,16 @@ public class ItemService {
                     .map(ItemPlace::getPlace)
                     .toList();
             return ItemResponse.fromEntity(item, places);
+        });
+    }
+
+    public Page<ItemListResponse> getExpiredItems(Pageable pageable) {
+
+        Page<Item> expiredItems = itemRepository.findByState(ItemState.EXPIRED, pageable);
+
+        return expiredItems.map(item -> {
+            String imageUrl = imageService.getFirstImagePathByItem(item);
+            return ItemListResponse.from(item, imageUrl);
         });
     }
 

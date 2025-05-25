@@ -61,6 +61,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByCreatedAtBeforeAndState(LocalDateTime createdAt, ItemState state);
 
+    Page<Item> findByState(ItemState state, Pageable pageable);
+           
     @Query("""
     SELECT i FROM Item i
     WHERE i.user.id = :userId AND i.id IN (
