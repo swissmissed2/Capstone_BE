@@ -63,6 +63,9 @@ public enum CustomErrorCode {
     QR_ALREADY_USED(HttpStatus.BAD_REQUEST, "이미 사용된 QR 코드입니다."),
     QR_EXPIRED(HttpStatus.BAD_REQUEST, "만료된 QR 코드입니다."),
 
+    // return
+    RETURN_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "반환 기록을 찾을 수 없습니다."),
+
     // Global
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
     NPE(HttpStatus.BAD_REQUEST, "Null Pointer Exception"),
