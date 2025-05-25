@@ -92,6 +92,10 @@ public class Item extends BaseEntity {
         this.state = ItemState.EXPIRED;
     }
 
+    public void setState(ItemState state) {
+        this.state = state;
+    }
+
     // DB에 insert가 끝난 직후 실행
     @PostPersist
     private void setTimeAfterPersist() {
