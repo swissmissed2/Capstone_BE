@@ -17,7 +17,6 @@ public class ItemExpirationScheduler {
 
     private final ItemRepository itemRepository;
 
-    // todo : 2주 뒤 만료로 수정
     @Transactional
     @Scheduled(cron = "0 0 3 * * ?") // 매일 새벽 3시 실행
     public void expireOldItems() {

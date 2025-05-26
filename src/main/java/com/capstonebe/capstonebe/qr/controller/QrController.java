@@ -3,7 +3,6 @@ package com.capstonebe.capstonebe.qr.controller;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.qr.dto.request.IssueQrRequest;
-import com.capstonebe.capstonebe.qr.dto.request.SearchQrRequest;
 import com.capstonebe.capstonebe.qr.service.QrService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -54,23 +53,6 @@ public class QrController {
     public ResponseEntity<?> verifyQr(@RequestParam String token) {
 
         return ResponseEntity.ok(qrService.verifyQr(token));
-    }
-
-    /**
-     * 아이템으로 qr 코드 조회
-     * @param request
-     * @param user
-     * @return
-     */
-    @GetMapping
-    public ResponseEntity<?> getQrByItem(@RequestBody SearchQrRequest request,
-                                         @AuthenticationPrincipal User user) {
-
-        if (user == null) {
-            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
-        }
-
-        return ResponseEntity.ok(qrService.getQrByItem(request, user.getUsername()));
     }
 
 }

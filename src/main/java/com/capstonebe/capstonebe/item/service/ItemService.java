@@ -176,21 +176,6 @@ public class ItemService {
         return ItemDetailResponse.from(item, places, imageUrl);
     }
 
-
-    @Transactional(readOnly = true)
-    public List<ItemResponse> getItemsByType(ItemType type) {
-        List<Item> items = itemRepository.findByType(type);
-
-        return items.stream()
-                .map(item -> {
-                    List<Place> places = item.getItemPlaces().stream()
-                            .map(ItemPlace::getPlace)
-                            .toList();
-                    return ItemResponse.fromEntity(item, places);
-                })
-                .collect(Collectors.toList());
-    }
-
     @Transactional(readOnly = true)
     public Page<ItemListResponse> getItemsByFilter(ItemType type, String placeName, String categoryName,
                                                    String keyword, LocalDate startDate, LocalDate endDate,
