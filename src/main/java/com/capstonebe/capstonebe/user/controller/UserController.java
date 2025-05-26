@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -120,11 +121,22 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    // 이메일 중복 체크
+    // 이메일 중복 확인
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailDuplicate(@RequestParam String email) {
         boolean isDuplicate = userService.isEmailDuplicate(email);
         return ResponseEntity.ok(isDuplicate);
+    }
+
+    // 이름 확인
+    @GetMapping("/name")
+    public ResponseEntity<String> getUserName(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED);
+        }
+
+        String name = userService.getUserName(userDetails.getUsername());
+        return ResponseEntity.ok(name);
     }
 
     // 권환 확인
