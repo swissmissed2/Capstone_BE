@@ -6,6 +6,7 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.image.service.ImageService;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
+import com.capstonebe.capstonebe.item.dto.request.ItemVerifyRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.dto.response.ItemDetailResponse;
@@ -164,6 +165,7 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public ItemDetailResponse getItemById(Long id) {
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
@@ -225,6 +227,7 @@ public class ItemService {
         });
     }
 
+    @Transactional(readOnly = true)
     public Page<ItemListResponse> getExpiredItems(Pageable pageable) {
 
         Page<Item> expiredItems = itemRepository.findByState(ItemState.EXPIRED, pageable);
@@ -233,6 +236,17 @@ public class ItemService {
             String imageUrl = imageService.getFirstImagePathByItem(item);
             return ItemListResponse.from(item, imageUrl);
         });
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean verifyItemByIdentifier(Long id, ItemVerifyRequest request) {
+
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
+
+        if (item.getIdentifier() == null) return false;
+
+        return item.getIdentifier().equals(request.getIdentifier());
     }
 
     private void saveItemPlaces(Item item, List<Place> places) {
