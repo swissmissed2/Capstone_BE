@@ -129,7 +129,7 @@ public class UserController {
     }
 
     // 이름 확인
-    @GetMapping("/name")
+    @GetMapping("/check-name")
     public ResponseEntity<String> getUserName(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             throw new CustomException(CustomErrorCode.UNAUTHORIZED);
