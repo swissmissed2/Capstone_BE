@@ -1,5 +1,6 @@
 package com.capstonebe.capstonebe.post.service;
 
+import com.capstonebe.capstonebe.comment.repository.CommentRepository;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.image.service.ImageService;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
     private final KeywordService keywordService;
     private final ImageService imageService;
 
@@ -95,6 +97,8 @@ public class PostService {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new CustomException(CustomErrorCode.NO_PERMISSION);
         }
+
+        commentRepository.deleteAllByPostId(id);
 
         postRepository.deleteById(id);
     }
