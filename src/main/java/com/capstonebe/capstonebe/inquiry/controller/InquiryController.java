@@ -1,6 +1,8 @@
 package com.capstonebe.capstonebe.inquiry.controller;
 
 import com.capstonebe.capstonebe.global.entity.BaseEntity;
+import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
+import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.inquiry.dto.request.CreateInquiryRequest;
 import com.capstonebe.capstonebe.inquiry.dto.request.UpdateAnswerRequest;
 import com.capstonebe.capstonebe.inquiry.dto.response.InquiryResponse;
@@ -25,6 +27,10 @@ public class InquiryController extends BaseEntity {
     // 문의 생성
     @PostMapping
     public ResponseEntity<InquiryResponse> createInquiry(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid CreateInquiryRequest createRequest) {
+        if (userDetails == null) {
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED);
+        }
+
         InquiryResponse response = inquiryService.createInquiry(userDetails.getUsername(), createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
