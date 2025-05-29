@@ -3,6 +3,7 @@ package com.capstonebe.capstonebe.item.controller;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.dto.request.FoundItemRegisterRequest;
+import com.capstonebe.capstonebe.item.dto.request.ItemVerifyRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemEditRequest;
 import com.capstonebe.capstonebe.item.dto.request.LostItemRegisterRequest;
 import com.capstonebe.capstonebe.item.entity.ItemType;
@@ -111,6 +112,18 @@ public class ItemController {
         validateAdmin(token);
 
         return ResponseEntity.ok(itemService.getExpiredItems(pageable));
+    }
+
+    @GetMapping("/{id}/verify")
+    public ResponseEntity<?> verifyItemByIdentifier(@PathVariable Long id,
+                                                    @RequestBody @Valid ItemVerifyRequest request,
+                                                    @AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        return ResponseEntity.ok(itemService.verifyItemByIdentifier(id, request));
     }
 
     private void validateAdmin(String token) {

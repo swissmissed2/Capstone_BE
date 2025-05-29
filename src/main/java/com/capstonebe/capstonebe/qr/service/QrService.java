@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.qr.dto.request.IssueQrRequest;
 import com.capstonebe.capstonebe.qr.dto.request.SearchQrRequest;
@@ -98,7 +99,12 @@ public class QrService {
 
         qr.setUsed(Boolean.TRUE);
 
+        Item item = qr.getItem();
+        item.setState(ItemState.RETURNED);
+
         qrRepository.save(qr);
+
+        itemRepository.save(item);
 
         returnRecordService.registerReturnRecord(qr.getItem(), qr.getUser(), LocalDateTime.now());
 
