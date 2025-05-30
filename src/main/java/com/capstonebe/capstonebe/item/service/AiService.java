@@ -22,7 +22,7 @@ public class AiService {
 
     public AiDescriptionResponse requestDescriptionFromAI(List<String> imageUrls) {
 
-        String aiUrl = "http://localhost:8080/api/v1/describe-item";
+        String aiUrl = "http://localhost:8000/api/v1/describe-item";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -42,7 +42,7 @@ public class AiService {
 
     public AiMatchingResponse requestMatchingFromAI(AiMatchingRequest request) {
 
-        String aiUrl = "http://localhost:8080/api/v1/match-items";
+        String aiUrl = "http://localhost:8000/api/v1/match-items";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
