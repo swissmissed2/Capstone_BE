@@ -25,7 +25,7 @@ public class ImageController {
 
     // 이미지 업로드
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImages(@RequestParam(required = false) List<MultipartFile> multipartFiles,
+    public ResponseEntity<?> uploadImages(@RequestPart("multipartFiles") List<MultipartFile> multipartFiles,
                                          @AuthenticationPrincipal User user) {
 
         if (user == null)
