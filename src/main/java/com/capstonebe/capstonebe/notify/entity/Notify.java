@@ -1,7 +1,6 @@
 package com.capstonebe.capstonebe.notify.entity;
 
 import com.capstonebe.capstonebe.global.entity.BaseEntity;
-import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -33,13 +32,17 @@ public class Notify extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
+    private String itemName;
+
     @Builder
-    public Notify(String content, String relatedUrl, NotifyType type, boolean isRead, User receiver) {
+    public Notify(Long id, String content, String relatedUrl, NotifyType type, Boolean isRead, User receiver, String itemName) {
+        this.id = id;
         this.content = content;
         this.relatedUrl = relatedUrl;
         this.type = type;
         this.isRead = isRead;
         this.receiver = receiver;
+        this.itemName = itemName;
     }
 
     public void readNotify() {

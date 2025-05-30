@@ -31,11 +31,11 @@ public class NotifyResponse {
         this.createdAt = createdAt;
     }
 
-    public static NotifyResponse fromEntity(Notify notify) {
+    public static NotifyResponse from(Notify notify) {
         return NotifyResponse.builder()
                 .content(notify.getContent())
                 .id(notify.getId().toString())
-                .name(notify.getReceiver().getName())
+                .name(notify.getItemName())
                 .type(notify.getType() == NotifyType.MATCHING ? NotifyType.MATCHING.toString() : NotifyType.KEYWORD.toString())
                 .url(notify.getRelatedUrl())
                 .createdAt(notify.getCreatedAt().toString())

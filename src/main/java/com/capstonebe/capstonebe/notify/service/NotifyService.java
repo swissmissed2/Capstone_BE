@@ -82,13 +82,13 @@ public class NotifyService {
 
     // 지정된 수신자에게 알림 전송(비동기)
     @Async
-    public void send(String email, NotifyType notifyType, String content, String url) {
+    public void send(String email, NotifyType notifyType, String content, String itemName, String url) {
 
         try {
             User receiver = userRepository.findByEmail(email)
                     .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-            Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url));
+            Notify notify = notifyRepository.save(createNotify(receiver, notifyType, content, url, itemName));
 
             //String receiverEmail = receiver.getEmail();
             String eventId = email + "_" + notify.getId() + "_" + System.currentTimeMillis();
@@ -96,7 +96,7 @@ public class NotifyService {
             emitters.forEach(
                     (emitterId, emitter) -> {
                         emitterRepository.saveEventCache(eventId, notify);
-                        sendNotification(emitter, eventId, emitterId, NotifyResponse.fromEntity(notify));
+                        sendNotification(emitter, eventId, emitterId, NotifyResponse.from(notify));
                     }
             );
         } catch (Exception e) {
@@ -118,7 +118,7 @@ public class NotifyService {
 
         Page<Notify> notifications = notifyRepository.findByReceiverAndTypeAndIsReadFalse(user, notifyType, pageable);
 
-        return notifications.map(NotifyResponse::fromEntity);
+        return notifications.map(NotifyResponse::from);
     }
 
     @Transactional
@@ -147,13 +147,14 @@ public class NotifyService {
         notifyRepository.delete(notify);
     }
 
-    private Notify createNotify(User receiver, NotifyType notifyType, String content, String url) {
+    private Notify createNotify(User receiver, NotifyType notifyType, String content, String url, String itemName) {
         return Notify.builder()
                 .receiver(receiver)
                 .type(notifyType)
                 .content(content)
                 .relatedUrl(url)
                 .isRead(false)
+                .itemName(itemName)
                 .build();
     }
 
