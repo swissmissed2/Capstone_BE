@@ -21,14 +21,17 @@ public class NotifyResponse {
 
     String createdAt;
 
+    Boolean isRead;
+
     @Builder
-    public NotifyResponse(String id, String name, String content, String type, String url, String createdAt) {
+    public NotifyResponse(String id, String name, String content, String type, String url, String createdAt, Boolean isRead) {
         this.id = id;
         this.name = name;
         this.content = content;
         this.type = type;
         this.url = url;
         this.createdAt = createdAt;
+        this.isRead = isRead;
     }
 
     public static NotifyResponse from(Notify notify) {
@@ -39,6 +42,7 @@ public class NotifyResponse {
                 .type(notify.getType() == NotifyType.MATCHING ? NotifyType.MATCHING.toString() : NotifyType.KEYWORD.toString())
                 .url(notify.getRelatedUrl())
                 .createdAt(notify.getCreatedAt().toString())
+                .isRead(notify.getIsRead())
                 .build();
 
     }

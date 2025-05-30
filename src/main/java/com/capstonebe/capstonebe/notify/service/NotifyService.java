@@ -116,7 +116,7 @@ public class NotifyService {
             default -> throw new CustomException(CustomErrorCode.INVALID_NOTIFY_TYPE);
         };
 
-        Page<Notify> notifications = notifyRepository.findByReceiverAndTypeAndIsReadFalse(user, notifyType, pageable);
+        Page<Notify> notifications = notifyRepository.findByReceiverAndType(user, notifyType, pageable);
 
         return notifications.map(NotifyResponse::from);
     }

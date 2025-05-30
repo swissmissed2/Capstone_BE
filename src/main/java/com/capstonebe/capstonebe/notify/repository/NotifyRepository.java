@@ -15,7 +15,7 @@ public interface NotifyRepository extends JpaRepository<Notify, Long> {
 
     List<Notify> findByCreatedAtBefore(LocalDateTime dateTime);
 
-    Page<Notify> findByReceiverAndTypeAndIsReadFalse(User receiver, NotifyType notifyType, Pageable pageable);
+    Page<Notify> findByReceiverAndType(User receiver, NotifyType notifyType, Pageable pageable);
 
     Optional<Notify> findByReceiverAndId(User receiver, Long id);
 }
