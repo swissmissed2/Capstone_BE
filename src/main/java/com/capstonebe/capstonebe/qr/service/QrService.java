@@ -79,6 +79,10 @@ public class QrService {
 
         qrRepository.save(qr);
 
+        item.setState(ItemState.PENDING);
+
+        itemRepository.save(item);
+
         return qrImage;
     }
 
