@@ -133,6 +133,4 @@ public class ItemController {
         }
     }
 
-    // todo : 물건 반환 처리
-    // todo : 일정 기간(한달) 후에 물건 비활성화 처리
 }

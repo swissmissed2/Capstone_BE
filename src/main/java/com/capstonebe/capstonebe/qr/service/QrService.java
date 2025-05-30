@@ -10,8 +10,6 @@ import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemState;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.qr.dto.request.IssueQrRequest;
-import com.capstonebe.capstonebe.qr.dto.request.SearchQrRequest;
-import com.capstonebe.capstonebe.qr.dto.response.SearchQrResponse;
 import com.capstonebe.capstonebe.qr.entity.Qr;
 import com.capstonebe.capstonebe.qr.repository.QrRepository;
 import com.capstonebe.capstonebe.returnrecord.service.ReturnRecordService;
@@ -109,20 +107,6 @@ public class QrService {
         returnRecordService.registerReturnRecord(qr.getItem(), qr.getUser(), LocalDateTime.now());
 
         return Boolean.TRUE;
-    }
-
-    public SearchQrResponse getQrByItem(SearchQrRequest request, String email) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
-
-        Item item = itemRepository.findById(request.getItemId())
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
-
-        Qr qr = qrRepository.findByUserAndItem(user, item)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.QR_NOT_FOUND));
-
-        return SearchQrResponse.from(qr);
     }
 
     private byte[] generateQrCode(String content, int width, int height) throws WriterException, IOException {
