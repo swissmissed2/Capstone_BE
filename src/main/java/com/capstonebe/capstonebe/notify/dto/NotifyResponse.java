@@ -21,24 +21,28 @@ public class NotifyResponse {
 
     String createdAt;
 
+    Boolean isRead;
+
     @Builder
-    public NotifyResponse(String id, String name, String content, String type, String url, String createdAt) {
+    public NotifyResponse(String id, String name, String content, String type, String url, String createdAt, Boolean isRead) {
         this.id = id;
         this.name = name;
         this.content = content;
         this.type = type;
         this.url = url;
         this.createdAt = createdAt;
+        this.isRead = isRead;
     }
 
-    public static NotifyResponse fromEntity(Notify notify) {
+    public static NotifyResponse from(Notify notify) {
         return NotifyResponse.builder()
                 .content(notify.getContent())
                 .id(notify.getId().toString())
-                .name(notify.getReceiver().getName())
+                .name(notify.getItemName())
                 .type(notify.getType() == NotifyType.MATCHING ? NotifyType.MATCHING.toString() : NotifyType.KEYWORD.toString())
                 .url(notify.getRelatedUrl())
                 .createdAt(notify.getCreatedAt().toString())
+                .isRead(notify.getIsRead())
                 .build();
 
     }

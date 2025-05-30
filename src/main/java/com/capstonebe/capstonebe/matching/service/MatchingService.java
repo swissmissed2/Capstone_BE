@@ -87,8 +87,11 @@ public class MatchingService {
         String content = "등록하신 분실물과 유사한 습득물이 있습니다.";
         String url = "/api/items/" + response.getItemId();
 
+        String itemName = itemRepository.findById(response.getItemId())
+                        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM)).getName();
+
         emails.forEach(email ->
-                notifyService.send(email, NotifyType.MATCHING, content, url)
+                notifyService.send(email, NotifyType.MATCHING, content, itemName, url)
         );
     }
 
