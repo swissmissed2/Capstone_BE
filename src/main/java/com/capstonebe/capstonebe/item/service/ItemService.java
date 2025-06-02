@@ -34,7 +34,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -197,18 +196,17 @@ public class ItemService {
 
 
     @Transactional(readOnly = true)
-    public Page<ItemResponse> getLostItemsByUser(String email, Pageable pageable) {
+    public Page<ItemListResponse> getLostItemsByUser(String email, Pageable pageable) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
         Page<Item> items = itemRepository.findByUser(user, pageable);
 
+
         return items.map(item -> {
-            List<Place> places = item.getItemPlaces().stream()
-                    .map(ItemPlace::getPlace)
-                    .toList();
-            return ItemResponse.fromEntity(item, places);
+            String imageUrl = imageService.getFirstImagePathByItem(item);
+            return ItemListResponse.from(item, imageUrl);
         });
     }
 
