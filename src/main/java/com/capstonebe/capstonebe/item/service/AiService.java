@@ -33,11 +33,10 @@ public class AiService {
 
         HttpEntity<?> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<AiDescriptionResponse> response = restTemplate.postForEntity(
-                aiUrl, entity, AiDescriptionResponse.class
-        );
+        AiDescriptionResponse response = restTemplate.postForObject(aiUrl, entity, AiDescriptionResponse.class);
+        response.setImageUrls(imageUrls);
 
-        return response.getBody();
+        return response;
     }
 
     public AiMatchingResponse requestMatchingFromAI(AiMatchingRequest request) {
