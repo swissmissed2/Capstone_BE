@@ -13,14 +13,18 @@ import com.capstonebe.capstonebe.image.entity.Image;
 import com.capstonebe.capstonebe.image.repository.ImageRepository;
 import com.capstonebe.capstonebe.item.dto.response.AiDescriptionResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
+import com.capstonebe.capstonebe.item.event.ItemRegisteredEvent;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
 import com.capstonebe.capstonebe.item.service.AiService;
 import com.capstonebe.capstonebe.user.entity.User;
 import com.capstonebe.capstonebe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,6 +44,7 @@ public class ImageService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final AiService aiService;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 이미지 업로드하고 ai서버로 이미지 경로 전송하여 이미지에 대한 설명 받기
@@ -48,11 +53,11 @@ public class ImageService {
      */
     public AiDescriptionResponse uploadImages(List<MultipartFile> multipartFiles) {
 
-            List<String> imageUuls =  multipartFiles.stream()
+            List<String> imageUrls =  multipartFiles.stream()
                     .map(this::uploadToS3)
                     .toList();
 
-            return aiService.requestDescriptionFromAI(imageUuls);
+            return aiService.requestDescriptionFromAI(imageUrls);
     }
 
     public String uploadToS3(MultipartFile multipartFile) {
@@ -80,6 +85,7 @@ public class ImageService {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM));
 
@@ -90,6 +96,14 @@ public class ImageService {
                         .path(path)
                         .build())
                 .toList();
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eventPublisher.publishEvent(new ItemRegisteredEvent(item.getId(),
+                        item.getCategory().getName(), item.getType().getName()));
+            }
+        });
 
         imageRepository.saveAll(images);
 

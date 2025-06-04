@@ -45,7 +45,6 @@ public class ItemService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ItemResponse resisterLostItem(LostItemRegisterRequest request, String email) {
@@ -70,14 +69,6 @@ public class ItemService {
 
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
-
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishEvent(new ItemRegisteredEvent(item.getId(),
-                        category.getName(), ItemType.LOST_ITEM.getName()));
-            }
-        });
 
         return ItemResponse.fromEntity(item, places);
     }
@@ -106,14 +97,6 @@ public class ItemService {
 
         List<Place> places = placeRepository.findAllById(request.getPlaceIds());
         saveItemPlaces(item, places);
-
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishEvent(new ItemRegisteredEvent(item.getId(),
-                        category.getName(), ItemType.LOST_ITEM.getName()));
-            }
-        });
 
         return ItemResponse.fromEntity(item, places);
     }

@@ -17,4 +17,11 @@ public class AiMatchingResponse {
     @NotEmpty @JsonProperty("matched_items")
     private List<Map<String, String>> matchedItems;
 
+    @Override
+    public String toString() {
+        return "AiMatchingResponse{" +
+                "itemId=" + itemId +
+                ", matchedItems=" + matchedItems +
+                '}';
+    }
 }
