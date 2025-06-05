@@ -2,7 +2,6 @@ package com.capstonebe.capstonebe.image.controller;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
-import com.capstonebe.capstonebe.image.dto.request.ImageEditRequest;
 import com.capstonebe.capstonebe.image.dto.request.ImageRegisterRequest;
 import com.capstonebe.capstonebe.image.service.ImageService;
 import jakarta.validation.Valid;
@@ -13,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,7 +21,12 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    // 이미지 업로드
+    /**
+     * 이미지 업로드
+     * @param multipartFiles
+     * @param user
+     * @return 이미지 설명과 이미지 경로 반환
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImages(@RequestPart("multipartFiles") List<MultipartFile> multipartFiles,
                                          @AuthenticationPrincipal User user) {
@@ -38,7 +41,12 @@ public class ImageController {
         return ResponseEntity.ok(imageService.uploadImages(multipartFiles));
     }
 
-    // 이미지 객체 등록
+    /**
+     * 이미지 item id를 받아 등록
+     * @param request
+     * @param user
+     * @return
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerImage(@RequestBody @Valid ImageRegisterRequest request,
                                            @AuthenticationPrincipal User user) {

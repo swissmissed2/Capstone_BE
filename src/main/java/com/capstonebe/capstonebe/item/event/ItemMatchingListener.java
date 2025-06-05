@@ -45,6 +45,8 @@ public class ItemMatchingListener {
                 .imageUrls(imageUrls)
                 .category(event.categoryName())
                 .type(event.typeName())
+                .threshold(0.3f)
+                .topK(3)
                 .build();
 
         AiMatchingResponse response = aiService.requestMatchingFromAI(request);
@@ -52,6 +54,8 @@ public class ItemMatchingListener {
         List<Long> ids = response.getMatchedItems().stream()
                 .map(m -> Long.parseLong(m.get("item_id")))
                 .toList();
+
+        System.out.println("알림 전송할 유저 아이디 : " + ids);
 
         List<Item> matchedItems = itemRepository.findAllById(ids);
 
