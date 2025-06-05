@@ -18,4 +18,6 @@ public interface NotifyRepository extends JpaRepository<Notify, Long> {
     Page<Notify> findByReceiverAndType(User receiver, NotifyType notifyType, Pageable pageable);
 
     Optional<Notify> findByReceiverAndId(User receiver, Long id);
+
+    Boolean existsByReceiverAndIsReadFalse(User receiver);
 }
