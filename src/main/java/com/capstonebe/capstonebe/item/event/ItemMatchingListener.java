@@ -5,6 +5,7 @@ import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.image.entity.Image;
 import com.capstonebe.capstonebe.image.repository.ImageRepository;
 import com.capstonebe.capstonebe.matching.dto.request.AiMatchingRequest;
+import com.capstonebe.capstonebe.matching.dto.request.CreateMatchingRequest;
 import com.capstonebe.capstonebe.matching.dto.response.AiMatchingResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
@@ -28,6 +29,7 @@ public class ItemMatchingListener {
     private final ItemRepository itemRepository;
     private final ImageRepository imageRepository;
 
+    // todo : 매칭 결과 받고 매칭 엔티티에도 저장
     @Async
     @Transactional
     @EventListener
@@ -56,6 +58,10 @@ public class ItemMatchingListener {
                 .toList();
 
         System.out.println("알림 전송할 유저 아이디 : " + ids);
+
+        CreateMatchingRequest createMatchingRequest = new CreateMatchingRequest(response.getItemId(), ids);
+
+        matchingService.createMatching(createMatchingRequest);
 
         List<Item> matchedItems = itemRepository.findAllById(ids);
 
