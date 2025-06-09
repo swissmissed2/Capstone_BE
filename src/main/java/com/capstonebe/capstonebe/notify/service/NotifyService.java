@@ -3,6 +3,7 @@ package com.capstonebe.capstonebe.notify.service;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.notify.dto.NotifyResponse;
+import com.capstonebe.capstonebe.notify.dto.NotifySubscribeResponse;
 import com.capstonebe.capstonebe.notify.entity.Notify;
 import com.capstonebe.capstonebe.notify.entity.NotifyType;
 import com.capstonebe.capstonebe.notify.repository.EmitterRepository;
@@ -34,7 +35,7 @@ public class NotifyService {
 
     // SseEmitter는 클라이언트에게 이벤트를 전송하는 역할 수행
     // sse 구독 설정
-    public SseEmitter subscribe(String email, String lastEventId) {
+    public NotifySubscribeResponse subscribe(String email, String lastEventId) {
         String emitterId = makeTimeIncludeId(email);
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
@@ -49,7 +50,15 @@ public class NotifyService {
             sendLostData(lastEventId, email, emitterId, emitter);
         }
 
-        return emitter;
+        User receiver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Boolean hasNotifications = Boolean.FALSE;
+
+        if (notifyRepository.existsByReceiverAndIsReadFalse(receiver))
+            hasNotifications = Boolean.TRUE;
+
+        return NotifySubscribeResponse.from(emitter, hasNotifications);
     }
 
     private String makeTimeIncludeId(String email) {

@@ -2,9 +2,11 @@ package com.capstonebe.capstonebe.notify.controller;
 
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
+import com.capstonebe.capstonebe.notify.dto.NotifySubscribeResponse;
 import com.capstonebe.capstonebe.notify.service.NotifyService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,14 +29,21 @@ public class NotifyController {
      * @return
      */
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@AuthenticationPrincipal User user,
-                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+    public ResponseEntity<SseEmitter> subscribe(@AuthenticationPrincipal User user,
+                                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
         if (user == null) {
             throw new CustomException(CustomErrorCode.INVALID_TOKEN);
         }
 
-        return notifyService.subscribe(user.getUsername(), lastEventId);
+        NotifySubscribeResponse response = notifyService.subscribe(user.getUsername(), lastEventId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Has-Notifications", String.valueOf(response.getHasNotifications()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(response.getEmitter());
     }
 
     /**
