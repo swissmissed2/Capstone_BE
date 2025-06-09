@@ -41,6 +41,13 @@ public class FAQController {
         return ResponseEntity.noContent().build();
     }
 
+    // FAQ 전체 조회
+    @GetMapping
+    public ResponseEntity<Page<FAQResponse>> getAllFAQs(Pageable pageable) {
+        Page<FAQResponse> faqs = faqService.getAllFAQs(pageable);
+        return ResponseEntity.ok(faqs);
+    }
+
     // 타입 별 FAQ 조회
     @GetMapping
     public ResponseEntity<Page<FAQResponse>> getFAQsByType(@RequestParam("type") QuestionType questionType, Pageable pageable) {

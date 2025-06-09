@@ -3,6 +3,7 @@ package com.capstonebe.capstonebe.matching.controller;
 import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
+import com.capstonebe.capstonebe.matching.dto.request.ConfirmOwnerRequest;
 import com.capstonebe.capstonebe.matching.dto.request.CreateMatchingRequest;
 import com.capstonebe.capstonebe.matching.dto.response.MatchingResponse;
 import com.capstonebe.capstonebe.matching.service.MatchingService;
@@ -39,5 +40,11 @@ public class MatchingController {
 
         Page<ItemListResponse> responses = matchingService.getMatchedItemsByUser(userDetails.getUsername(), id, pageable);
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/owner")
+    public ResponseEntity<Void> confirmOwnership(@RequestBody @Valid ConfirmOwnerRequest confirmRequest) {
+        matchingService.confirmOwnership(confirmRequest);
+        return ResponseEntity.ok().build();
     }
 }

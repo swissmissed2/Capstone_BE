@@ -30,4 +30,8 @@ public class Matching {
 
     @Enumerated(EnumType.STRING)
     private MatchingState state;
+
+    public void updateState(MatchingState newState) {
+        this.state = newState;
+    }
 }

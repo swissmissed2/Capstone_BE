@@ -1,0 +1,16 @@
+package com.capstonebe.capstonebe.matching.dto.request;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConfirmOwnerRequest {
+    @NotNull
+    private Long foundItemId;
+
+    private Long lostItemId;
+}

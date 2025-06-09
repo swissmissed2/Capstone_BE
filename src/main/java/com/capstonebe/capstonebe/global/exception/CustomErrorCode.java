@@ -18,6 +18,9 @@ public enum CustomErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 
+    // Matching
+    MATCHING_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 매칭을 찾을 수 없습니다."),
+
     // Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 포스트를 찾을 수 없습니다."),
 

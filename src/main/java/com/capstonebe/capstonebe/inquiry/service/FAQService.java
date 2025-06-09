@@ -61,6 +61,12 @@ public class FAQService {
     }
 
     @Transactional(readOnly = true)
+    public Page<FAQResponse> getAllFAQs(Pageable pageable) {
+        Page<FAQ> faqs = faqRepository.findAll(pageable);
+        return faqs.map(FAQResponse::from);
+    }
+
+    @Transactional(readOnly = true)
     public Page<FAQResponse> getFAQsByType(QuestionType questionType, Pageable pageable) {
         Page<FAQ> faqs = faqRepository.findAllByQuestionType(questionType, pageable);
         return faqs.map(FAQResponse::from);

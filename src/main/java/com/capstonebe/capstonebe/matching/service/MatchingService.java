@@ -7,6 +7,7 @@ import com.capstonebe.capstonebe.item.dto.response.ItemListResponse;
 import com.capstonebe.capstonebe.item.entity.Item;
 import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.item.repository.ItemRepository;
+import com.capstonebe.capstonebe.matching.dto.request.ConfirmOwnerRequest;
 import com.capstonebe.capstonebe.matching.dto.request.CreateMatchingRequest;
 import com.capstonebe.capstonebe.matching.dto.response.AiMatchingResponse;
 import com.capstonebe.capstonebe.matching.dto.response.MatchingResponse;
@@ -95,4 +96,23 @@ public class MatchingService {
         );
     }
 
+    @Transactional
+    public void confirmOwnership(ConfirmOwnerRequest confirmRequest) {
+        Long lostItemId = confirmRequest.getLostItemId();
+        Long foundItemId = confirmRequest.getFoundItemId();
+
+        Matching correctMatching = matchingRepository.findByLostItemIdAndFoundItemId(lostItemId, foundItemId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.MATCHING_NOT_FOUND));
+
+        correctMatching.updateState(MatchingState.PENDING);
+        matchingRepository.save(correctMatching);
+
+        List<Matching> relatedMatchings = matchingRepository.findAllByLostItemIdOrFoundItemId(lostItemId, foundItemId);
+        for (Matching matching : relatedMatchings) {
+            if (!matching.getId().equals(correctMatching.getId())) {
+                matching.updateState(MatchingState.CANCELED);
+            }
+        }
+        matchingRepository.saveAll(relatedMatchings);
+    }
 }
