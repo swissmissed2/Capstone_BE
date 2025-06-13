@@ -18,9 +18,12 @@ public class ItemListResponse {
     private ItemState state;
     private Long categoryId;
     private String imageUrl;
+    private Double latitude;
+    private Double longitude;
+
 
     @Builder
-    public ItemListResponse(Long id, String name, LocalDate time, ItemType type, ItemState state, Long categoryId, String imageUrl) {
+    public ItemListResponse(Long id, String name, LocalDate time, ItemType type, ItemState state, Long categoryId, String imageUrl, Double latitude, Double longitude) {
         this.id = id;
         this.name = name;
         this.time = time;
@@ -28,6 +31,8 @@ public class ItemListResponse {
         this.state = state;
         this.categoryId = categoryId;
         this.imageUrl = imageUrl;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public static ItemListResponse from(Item item, String imageUrl) {
@@ -40,6 +45,8 @@ public class ItemListResponse {
                 .state(item.getState())
                 .categoryId(item.getCategory().getId())
                 .imageUrl(imageUrl)
+                .latitude(item.getLatitude())
+                .longitude(item.getLongitude())
                 .build();
     }
 }
