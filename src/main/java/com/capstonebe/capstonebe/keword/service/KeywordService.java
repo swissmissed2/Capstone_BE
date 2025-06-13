@@ -88,7 +88,7 @@ public class KeywordService {
                 .forEach(keyword -> {
                     User user = keyword.getUser();
                     String notifyContent = "‘" + keyword.getKeyword() + "’(이)가 포함된 게시글이 등록되었습니다.";
-                    String url = "/api/v1/posts/" + post.getId();
+                    String url = "http://localhost:8080/lost-items/" + post.getId();
 
                     notifyService.send(user.getEmail(), NotifyType.KEYWORD, notifyContent, null, url);
                 });
