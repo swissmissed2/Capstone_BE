@@ -47,7 +47,7 @@ public class ItemMatchingListener {
                 .imageUrls(imageUrls)
                 .category(event.categoryName())
                 .type(event.typeName())
-                .threshold(0.3f)
+                .threshold(0.2f)
                 .topK(3)
                 .build();
 
