@@ -156,6 +156,20 @@ public class NotifyService {
         notifyRepository.delete(notify);
     }
 
+    @Transactional(readOnly = true)
+    public Boolean getHasNotificationsByUser(String email) {
+
+        User receiver = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+
+        Boolean hasNotifications = Boolean.FALSE;
+
+        if (notifyRepository.existsByReceiverAndIsReadFalse(receiver))
+            hasNotifications = Boolean.TRUE;
+
+        return hasNotifications;
+    }
+
     private Notify createNotify(User receiver, NotifyType notifyType, String content, String url, String itemName) {
         return Notify.builder()
                 .receiver(receiver)

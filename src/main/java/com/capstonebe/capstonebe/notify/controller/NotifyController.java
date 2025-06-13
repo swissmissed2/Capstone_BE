@@ -46,6 +46,16 @@ public class NotifyController {
                 .body(response.getEmitter());
     }
 
+    @GetMapping("/has-notifications")
+    public ResponseEntity<?> getHasNotificationsByUser(@AuthenticationPrincipal User user) {
+
+        if (user == null) {
+            throw new CustomException(CustomErrorCode.INVALID_TOKEN);
+        }
+
+        return ResponseEntity.ok(notifyService.getHasNotificationsByUser(user.getUsername()));
+    }
+
     /**
      * 알림 읽음 처리
      * @param id
