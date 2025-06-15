@@ -83,13 +83,28 @@ public class MatchingService {
         });
     }
 
-    public void sendMatchingNotify(AiMatchingResponse response, List<String> emails) {
+    // 분실물 등록시 보내는 알림
+    public void sendMatchingNotifyByLostItem(String email, List<Long> ids) {
+
+        String content = "등록하신 분실물과 유사한 습득물이 있습니다.";
+                ids.forEach((id) -> {
+                    String url = "http://localhost:8080/found-items/" + id;
+
+                    String itemName = itemRepository.findById(id)
+                            .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM)).getName();
+
+                    notifyService.send(email, NotifyType.MATCHING, content, itemName, url);
+                });
+    }
+
+    // 습득물 등록시 보내는 알림
+    public void sendMatchingNotifyByFoundItem(AiMatchingResponse response, List<String> emails) {
 
         String content = "등록하신 분실물과 유사한 습득물이 있습니다.";
         String url = "http://localhost:8080/found-items/" + response.getItemId();
 
         String itemName = itemRepository.findById(response.getItemId())
-                        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM)).getName();
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ITEM)).getName();
 
         emails.forEach(email ->
                 notifyService.send(email, NotifyType.MATCHING, content, itemName, url)

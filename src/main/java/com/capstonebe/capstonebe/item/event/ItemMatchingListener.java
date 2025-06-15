@@ -4,6 +4,7 @@ import com.capstonebe.capstonebe.global.exception.CustomErrorCode;
 import com.capstonebe.capstonebe.global.exception.CustomException;
 import com.capstonebe.capstonebe.image.entity.Image;
 import com.capstonebe.capstonebe.image.repository.ImageRepository;
+import com.capstonebe.capstonebe.item.entity.ItemType;
 import com.capstonebe.capstonebe.matching.dto.request.AiMatchingRequest;
 import com.capstonebe.capstonebe.matching.dto.request.CreateMatchingRequest;
 import com.capstonebe.capstonebe.matching.dto.response.AiMatchingResponse;
@@ -57,20 +58,27 @@ public class ItemMatchingListener {
                 .map(m -> Long.parseLong(m.get("item_id")))
                 .toList();
 
-        System.out.println("알림 전송할 유저 아이디 : " + ids);
+        System.out.println("알림 전송할 item 아이디 : " + ids);
 
         CreateMatchingRequest createMatchingRequest = new CreateMatchingRequest(response.getItemId(), ids);
 
         matchingService.createMatching(createMatchingRequest);
 
-        List<Item> matchedItems = itemRepository.findAllById(ids);
+        if (event.typeName().equals(ItemType.LOST_ITEM.getName())) {
 
-        List<String> emails = matchedItems.stream()
-                .map(Item::getUser)
-                .map(User::getEmail)
-                .distinct()
-                .toList();
+            matchingService.sendMatchingNotifyByLostItem(item.getUser().getEmail(), ids);
+        }
+        else {
 
-        matchingService.sendMatchingNotify(response, emails);
+            List<Item> matchedItems = itemRepository.findAllById(ids);
+
+            List<String> emails = matchedItems.stream()
+                    .map(Item::getUser)
+                    .map(User::getEmail)
+                    .distinct()
+                    .toList();
+
+            matchingService.sendMatchingNotifyByFoundItem(response, emails);
+        }
     }
 }
